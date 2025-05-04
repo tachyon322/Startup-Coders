@@ -9,47 +9,6 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export function useHeaderAnimation() {
-  const headerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (!headerRef.current) return;
-
-    const header = headerRef.current;
-    const logo = header.querySelector('.logo');
-    const navItems = header.querySelectorAll('nav a');
-    const buttons = header.querySelectorAll('button');
-
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-    tl.fromTo(
-      logo,
-      { y: -50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7 }
-    );
-
-    tl.fromTo(
-      navItems,
-      { y: -30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 },
-      "-=0.4"
-    );
-
-    tl.fromTo(
-      buttons,
-      { y: -30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 },
-      "-=0.3"
-    );
-
-    return () => {
-      tl.kill();
-    };
-  }, []);
-
-  return headerRef;
-}
-
 export function useHeroAnimation() {
   const heroRef = useRef<HTMLElement>(null);
 

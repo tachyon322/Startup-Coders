@@ -177,11 +177,16 @@ exports.Prisma.StartupScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
-  image: 'image',
   websiteUrl: 'websiteUrl',
   creatorUser: 'creatorUser',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ImagesScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  startupId: 'startupId'
 };
 
 exports.Prisma.SortOrder = {
@@ -206,7 +211,8 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Tag: 'Tag',
-  Startup: 'Startup'
+  Startup: 'Startup',
+  Images: 'Images'
 };
 
 /**
