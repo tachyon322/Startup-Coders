@@ -9,12 +9,40 @@ export async function getTags() {
   return tags
 }
 
-export async function getStartups(page = 1, pageSize = 10) {
+export async function getStartups(
+  page = 1,
+  pageSize = 10,
+  searchQuery?: string,
+  tagIds?: number[]
+) {
   // Calculate the skip value for pagination
   const skip = (page - 1) * pageSize;
 
-  // Fetch startups with pagination
+  // Build where clause based on search parameters
+  const where: any = {};
+  
+  // Add name search if provided
+  if (searchQuery) {
+    where.name = {
+      contains: searchQuery,
+      mode: 'insensitive'
+    };
+  }
+  
+  // Add tag filtering if provided
+  if (tagIds && tagIds.length > 0) {
+    where.tags = {
+      some: {
+        id: {
+          in: tagIds
+        }
+      }
+    };
+  }
+
+  // Fetch startups with pagination and filters
   const startups = await db.startup.findMany({
+    where,
     skip,
     take: pageSize,
     orderBy: {
@@ -42,8 +70,8 @@ export async function getStartups(page = 1, pageSize = 10) {
     }
   })
 
-  // Get the total count of startups for pagination
-  const totalStartups = await db.startup.count()
+  // Get the total count of startups for pagination with the same filters
+  const totalStartups = await db.startup.count({ where })
 
   // Calculate total pages
   const totalPages = Math.ceil(totalStartups / pageSize)
@@ -137,5 +165,40 @@ export async function createStartup(
     }
   })
   
+  return startup
+}
+
+export async function getStartupById(startupId: string) {
+  const startup = await db.startup.findUnique({
+    where: {
+      id: startupId
+    },
+    include: {
+      tags: true,
+      images: true,
+      creatorId: {
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          image: true,
+          description: true
+        }
+      },
+      participants: {
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          image: true
+        }
+      }
+    }
+  })
+
+  if (!startup) {
+    return null
+  }
+
   return startup
 } 

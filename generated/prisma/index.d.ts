@@ -39,6 +39,11 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  */
 export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
 /**
+ * Model StartupRequest
+ * 
+ */
+export type StartupRequest = $Result.DefaultSelection<Prisma.$StartupRequestPayload>
+/**
  * Model Startup
  * 
  */
@@ -223,6 +228,16 @@ export class PrismaClient<
     * ```
     */
   get tag(): Prisma.TagDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.startupRequest`: Exposes CRUD operations for the **StartupRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StartupRequests
+    * const startupRequests = await prisma.startupRequest.findMany()
+    * ```
+    */
+  get startupRequest(): Prisma.StartupRequestDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.startup`: Exposes CRUD operations for the **Startup** model.
@@ -688,6 +703,7 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     Tag: 'Tag',
+    StartupRequest: 'StartupRequest',
     Startup: 'Startup',
     Images: 'Images'
   };
@@ -708,7 +724,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "tag" | "startup" | "images"
+      modelProps: "user" | "session" | "account" | "verification" | "tag" | "startupRequest" | "startup" | "images"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1082,6 +1098,80 @@ export namespace Prisma {
           }
         }
       }
+      StartupRequest: {
+        payload: Prisma.$StartupRequestPayload<ExtArgs>
+        fields: Prisma.StartupRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StartupRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StartupRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.StartupRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StartupRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          findMany: {
+            args: Prisma.StartupRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>[]
+          }
+          create: {
+            args: Prisma.StartupRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          createMany: {
+            args: Prisma.StartupRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StartupRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.StartupRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          update: {
+            args: Prisma.StartupRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.StartupRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StartupRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StartupRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.StartupRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StartupRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.StartupRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStartupRequest>
+          }
+          groupBy: {
+            args: Prisma.StartupRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StartupRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StartupRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<StartupRequestCountAggregateOutputType> | number
+          }
+        }
+      }
       Startup: {
         payload: Prisma.$StartupPayload<ExtArgs>
         fields: Prisma.StartupFieldRefs
@@ -1319,6 +1409,7 @@ export namespace Prisma {
     account?: AccountOmit
     verification?: VerificationOmit
     tag?: TagOmit
+    startupRequest?: StartupRequestOmit
     startup?: StartupOmit
     images?: ImagesOmit
   }
@@ -1417,6 +1508,7 @@ export namespace Prisma {
   export type UserCountOutputType = {
     tags: number
     createdStartups: number
+    receivedStartupRequests: number
     participatingStartups: number
     sessions: number
     accounts: number
@@ -1425,6 +1517,7 @@ export namespace Prisma {
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tags?: boolean | UserCountOutputTypeCountTagsArgs
     createdStartups?: boolean | UserCountOutputTypeCountCreatedStartupsArgs
+    receivedStartupRequests?: boolean | UserCountOutputTypeCountReceivedStartupRequestsArgs
     participatingStartups?: boolean | UserCountOutputTypeCountParticipatingStartupsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
@@ -1453,6 +1546,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCreatedStartupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StartupWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReceivedStartupRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StartupRequestWhereInput
   }
 
   /**
@@ -1514,6 +1614,46 @@ export namespace Prisma {
    */
   export type TagCountOutputTypeCountUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+
+  /**
+   * Count Type StartupRequestCountOutputType
+   */
+
+  export type StartupRequestCountOutputType = {
+    requestBy: number
+    startup: number
+  }
+
+  export type StartupRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestBy?: boolean | StartupRequestCountOutputTypeCountRequestByArgs
+    startup?: boolean | StartupRequestCountOutputTypeCountStartupArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StartupRequestCountOutputType without action
+   */
+  export type StartupRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequestCountOutputType
+     */
+    select?: StartupRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StartupRequestCountOutputType without action
+   */
+  export type StartupRequestCountOutputTypeCountRequestByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+  /**
+   * StartupRequestCountOutputType without action
+   */
+  export type StartupRequestCountOutputTypeCountStartupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StartupWhereInput
   }
 
 
@@ -1768,6 +1908,7 @@ export namespace Prisma {
     emailVerified?: boolean
     tags?: boolean | User$tagsArgs<ExtArgs>
     createdStartups?: boolean | User$createdStartupsArgs<ExtArgs>
+    receivedStartupRequests?: boolean | User$receivedStartupRequestsArgs<ExtArgs>
     participatingStartups?: boolean | User$participatingStartupsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
@@ -1814,6 +1955,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tags?: boolean | User$tagsArgs<ExtArgs>
     createdStartups?: boolean | User$createdStartupsArgs<ExtArgs>
+    receivedStartupRequests?: boolean | User$receivedStartupRequestsArgs<ExtArgs>
     participatingStartups?: boolean | User$participatingStartupsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
@@ -1827,6 +1969,7 @@ export namespace Prisma {
     objects: {
       tags: Prisma.$TagPayload<ExtArgs>[]
       createdStartups: Prisma.$StartupPayload<ExtArgs>[]
+      receivedStartupRequests: Prisma.$StartupRequestPayload<ExtArgs>[]
       participatingStartups: Prisma.$StartupPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
@@ -2237,6 +2380,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tags<T extends User$tagsArgs<ExtArgs> = {}>(args?: Subset<T, User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdStartups<T extends User$createdStartupsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdStartupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receivedStartupRequests<T extends User$receivedStartupRequestsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedStartupRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     participatingStartups<T extends User$participatingStartupsArgs<ExtArgs> = {}>(args?: Subset<T, User$participatingStartupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2711,6 +2855,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StartupScalarFieldEnum | StartupScalarFieldEnum[]
+  }
+
+  /**
+   * User.receivedStartupRequests
+   */
+  export type User$receivedStartupRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    where?: StartupRequestWhereInput
+    orderBy?: StartupRequestOrderByWithRelationInput | StartupRequestOrderByWithRelationInput[]
+    cursor?: StartupRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StartupRequestScalarFieldEnum | StartupRequestScalarFieldEnum[]
   }
 
   /**
@@ -7165,13 +7333,1142 @@ export namespace Prisma {
 
 
   /**
+   * Model StartupRequest
+   */
+
+  export type AggregateStartupRequest = {
+    _count: StartupRequestCountAggregateOutputType | null
+    _avg: StartupRequestAvgAggregateOutputType | null
+    _sum: StartupRequestSumAggregateOutputType | null
+    _min: StartupRequestMinAggregateOutputType | null
+    _max: StartupRequestMaxAggregateOutputType | null
+  }
+
+  export type StartupRequestAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type StartupRequestSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type StartupRequestMinAggregateOutputType = {
+    id: number | null
+    message: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StartupRequestMaxAggregateOutputType = {
+    id: number | null
+    message: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StartupRequestCountAggregateOutputType = {
+    id: number
+    message: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StartupRequestAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type StartupRequestSumAggregateInputType = {
+    id?: true
+  }
+
+  export type StartupRequestMinAggregateInputType = {
+    id?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StartupRequestMaxAggregateInputType = {
+    id?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StartupRequestCountAggregateInputType = {
+    id?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StartupRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StartupRequest to aggregate.
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StartupRequests to fetch.
+     */
+    orderBy?: StartupRequestOrderByWithRelationInput | StartupRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StartupRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StartupRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StartupRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StartupRequests
+    **/
+    _count?: true | StartupRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StartupRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StartupRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StartupRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StartupRequestMaxAggregateInputType
+  }
+
+  export type GetStartupRequestAggregateType<T extends StartupRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateStartupRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStartupRequest[P]>
+      : GetScalarType<T[P], AggregateStartupRequest[P]>
+  }
+
+
+
+
+  export type StartupRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StartupRequestWhereInput
+    orderBy?: StartupRequestOrderByWithAggregationInput | StartupRequestOrderByWithAggregationInput[]
+    by: StartupRequestScalarFieldEnum[] | StartupRequestScalarFieldEnum
+    having?: StartupRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StartupRequestCountAggregateInputType | true
+    _avg?: StartupRequestAvgAggregateInputType
+    _sum?: StartupRequestSumAggregateInputType
+    _min?: StartupRequestMinAggregateInputType
+    _max?: StartupRequestMaxAggregateInputType
+  }
+
+  export type StartupRequestGroupByOutputType = {
+    id: number
+    message: string
+    createdAt: Date
+    updatedAt: Date
+    _count: StartupRequestCountAggregateOutputType | null
+    _avg: StartupRequestAvgAggregateOutputType | null
+    _sum: StartupRequestSumAggregateOutputType | null
+    _min: StartupRequestMinAggregateOutputType | null
+    _max: StartupRequestMaxAggregateOutputType | null
+  }
+
+  type GetStartupRequestGroupByPayload<T extends StartupRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StartupRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StartupRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StartupRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], StartupRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StartupRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    requestBy?: boolean | StartupRequest$requestByArgs<ExtArgs>
+    startup?: boolean | StartupRequest$startupArgs<ExtArgs>
+    _count?: boolean | StartupRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["startupRequest"]>
+
+  export type StartupRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["startupRequest"]>
+
+  export type StartupRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["startupRequest"]>
+
+  export type StartupRequestSelectScalar = {
+    id?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StartupRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "createdAt" | "updatedAt", ExtArgs["result"]["startupRequest"]>
+  export type StartupRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestBy?: boolean | StartupRequest$requestByArgs<ExtArgs>
+    startup?: boolean | StartupRequest$startupArgs<ExtArgs>
+    _count?: boolean | StartupRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StartupRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StartupRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $StartupRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StartupRequest"
+    objects: {
+      requestBy: Prisma.$UserPayload<ExtArgs>[]
+      startup: Prisma.$StartupPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      message: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["startupRequest"]>
+    composites: {}
+  }
+
+  type StartupRequestGetPayload<S extends boolean | null | undefined | StartupRequestDefaultArgs> = $Result.GetResult<Prisma.$StartupRequestPayload, S>
+
+  type StartupRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StartupRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StartupRequestCountAggregateInputType | true
+    }
+
+  export interface StartupRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StartupRequest'], meta: { name: 'StartupRequest' } }
+    /**
+     * Find zero or one StartupRequest that matches the filter.
+     * @param {StartupRequestFindUniqueArgs} args - Arguments to find a StartupRequest
+     * @example
+     * // Get one StartupRequest
+     * const startupRequest = await prisma.startupRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StartupRequestFindUniqueArgs>(args: SelectSubset<T, StartupRequestFindUniqueArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StartupRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StartupRequestFindUniqueOrThrowArgs} args - Arguments to find a StartupRequest
+     * @example
+     * // Get one StartupRequest
+     * const startupRequest = await prisma.startupRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StartupRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, StartupRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StartupRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestFindFirstArgs} args - Arguments to find a StartupRequest
+     * @example
+     * // Get one StartupRequest
+     * const startupRequest = await prisma.startupRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StartupRequestFindFirstArgs>(args?: SelectSubset<T, StartupRequestFindFirstArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StartupRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestFindFirstOrThrowArgs} args - Arguments to find a StartupRequest
+     * @example
+     * // Get one StartupRequest
+     * const startupRequest = await prisma.startupRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StartupRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, StartupRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StartupRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StartupRequests
+     * const startupRequests = await prisma.startupRequest.findMany()
+     * 
+     * // Get first 10 StartupRequests
+     * const startupRequests = await prisma.startupRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const startupRequestWithIdOnly = await prisma.startupRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StartupRequestFindManyArgs>(args?: SelectSubset<T, StartupRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StartupRequest.
+     * @param {StartupRequestCreateArgs} args - Arguments to create a StartupRequest.
+     * @example
+     * // Create one StartupRequest
+     * const StartupRequest = await prisma.startupRequest.create({
+     *   data: {
+     *     // ... data to create a StartupRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends StartupRequestCreateArgs>(args: SelectSubset<T, StartupRequestCreateArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StartupRequests.
+     * @param {StartupRequestCreateManyArgs} args - Arguments to create many StartupRequests.
+     * @example
+     * // Create many StartupRequests
+     * const startupRequest = await prisma.startupRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StartupRequestCreateManyArgs>(args?: SelectSubset<T, StartupRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StartupRequests and returns the data saved in the database.
+     * @param {StartupRequestCreateManyAndReturnArgs} args - Arguments to create many StartupRequests.
+     * @example
+     * // Create many StartupRequests
+     * const startupRequest = await prisma.startupRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StartupRequests and only return the `id`
+     * const startupRequestWithIdOnly = await prisma.startupRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StartupRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, StartupRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StartupRequest.
+     * @param {StartupRequestDeleteArgs} args - Arguments to delete one StartupRequest.
+     * @example
+     * // Delete one StartupRequest
+     * const StartupRequest = await prisma.startupRequest.delete({
+     *   where: {
+     *     // ... filter to delete one StartupRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StartupRequestDeleteArgs>(args: SelectSubset<T, StartupRequestDeleteArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StartupRequest.
+     * @param {StartupRequestUpdateArgs} args - Arguments to update one StartupRequest.
+     * @example
+     * // Update one StartupRequest
+     * const startupRequest = await prisma.startupRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StartupRequestUpdateArgs>(args: SelectSubset<T, StartupRequestUpdateArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StartupRequests.
+     * @param {StartupRequestDeleteManyArgs} args - Arguments to filter StartupRequests to delete.
+     * @example
+     * // Delete a few StartupRequests
+     * const { count } = await prisma.startupRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StartupRequestDeleteManyArgs>(args?: SelectSubset<T, StartupRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StartupRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StartupRequests
+     * const startupRequest = await prisma.startupRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StartupRequestUpdateManyArgs>(args: SelectSubset<T, StartupRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StartupRequests and returns the data updated in the database.
+     * @param {StartupRequestUpdateManyAndReturnArgs} args - Arguments to update many StartupRequests.
+     * @example
+     * // Update many StartupRequests
+     * const startupRequest = await prisma.startupRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StartupRequests and only return the `id`
+     * const startupRequestWithIdOnly = await prisma.startupRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StartupRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, StartupRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StartupRequest.
+     * @param {StartupRequestUpsertArgs} args - Arguments to update or create a StartupRequest.
+     * @example
+     * // Update or create a StartupRequest
+     * const startupRequest = await prisma.startupRequest.upsert({
+     *   create: {
+     *     // ... data to create a StartupRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StartupRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StartupRequestUpsertArgs>(args: SelectSubset<T, StartupRequestUpsertArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StartupRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestCountArgs} args - Arguments to filter StartupRequests to count.
+     * @example
+     * // Count the number of StartupRequests
+     * const count = await prisma.startupRequest.count({
+     *   where: {
+     *     // ... the filter for the StartupRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends StartupRequestCountArgs>(
+      args?: Subset<T, StartupRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StartupRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StartupRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StartupRequestAggregateArgs>(args: Subset<T, StartupRequestAggregateArgs>): Prisma.PrismaPromise<GetStartupRequestAggregateType<T>>
+
+    /**
+     * Group by StartupRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StartupRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StartupRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StartupRequestGroupByArgs['orderBy'] }
+        : { orderBy?: StartupRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StartupRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStartupRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StartupRequest model
+   */
+  readonly fields: StartupRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StartupRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StartupRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requestBy<T extends StartupRequest$requestByArgs<ExtArgs> = {}>(args?: Subset<T, StartupRequest$requestByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    startup<T extends StartupRequest$startupArgs<ExtArgs> = {}>(args?: Subset<T, StartupRequest$startupArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StartupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StartupRequest model
+   */
+  interface StartupRequestFieldRefs {
+    readonly id: FieldRef<"StartupRequest", 'Int'>
+    readonly message: FieldRef<"StartupRequest", 'String'>
+    readonly createdAt: FieldRef<"StartupRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"StartupRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StartupRequest findUnique
+   */
+  export type StartupRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which StartupRequest to fetch.
+     */
+    where: StartupRequestWhereUniqueInput
+  }
+
+  /**
+   * StartupRequest findUniqueOrThrow
+   */
+  export type StartupRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which StartupRequest to fetch.
+     */
+    where: StartupRequestWhereUniqueInput
+  }
+
+  /**
+   * StartupRequest findFirst
+   */
+  export type StartupRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which StartupRequest to fetch.
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StartupRequests to fetch.
+     */
+    orderBy?: StartupRequestOrderByWithRelationInput | StartupRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StartupRequests.
+     */
+    cursor?: StartupRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StartupRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StartupRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StartupRequests.
+     */
+    distinct?: StartupRequestScalarFieldEnum | StartupRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StartupRequest findFirstOrThrow
+   */
+  export type StartupRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which StartupRequest to fetch.
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StartupRequests to fetch.
+     */
+    orderBy?: StartupRequestOrderByWithRelationInput | StartupRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StartupRequests.
+     */
+    cursor?: StartupRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StartupRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StartupRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StartupRequests.
+     */
+    distinct?: StartupRequestScalarFieldEnum | StartupRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StartupRequest findMany
+   */
+  export type StartupRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which StartupRequests to fetch.
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StartupRequests to fetch.
+     */
+    orderBy?: StartupRequestOrderByWithRelationInput | StartupRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StartupRequests.
+     */
+    cursor?: StartupRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StartupRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StartupRequests.
+     */
+    skip?: number
+    distinct?: StartupRequestScalarFieldEnum | StartupRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StartupRequest create
+   */
+  export type StartupRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StartupRequest.
+     */
+    data: XOR<StartupRequestCreateInput, StartupRequestUncheckedCreateInput>
+  }
+
+  /**
+   * StartupRequest createMany
+   */
+  export type StartupRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StartupRequests.
+     */
+    data: StartupRequestCreateManyInput | StartupRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StartupRequest createManyAndReturn
+   */
+  export type StartupRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many StartupRequests.
+     */
+    data: StartupRequestCreateManyInput | StartupRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StartupRequest update
+   */
+  export type StartupRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StartupRequest.
+     */
+    data: XOR<StartupRequestUpdateInput, StartupRequestUncheckedUpdateInput>
+    /**
+     * Choose, which StartupRequest to update.
+     */
+    where: StartupRequestWhereUniqueInput
+  }
+
+  /**
+   * StartupRequest updateMany
+   */
+  export type StartupRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StartupRequests.
+     */
+    data: XOR<StartupRequestUpdateManyMutationInput, StartupRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which StartupRequests to update
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * Limit how many StartupRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StartupRequest updateManyAndReturn
+   */
+  export type StartupRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update StartupRequests.
+     */
+    data: XOR<StartupRequestUpdateManyMutationInput, StartupRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which StartupRequests to update
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * Limit how many StartupRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StartupRequest upsert
+   */
+  export type StartupRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StartupRequest to update in case it exists.
+     */
+    where: StartupRequestWhereUniqueInput
+    /**
+     * In case the StartupRequest found by the `where` argument doesn't exist, create a new StartupRequest with this data.
+     */
+    create: XOR<StartupRequestCreateInput, StartupRequestUncheckedCreateInput>
+    /**
+     * In case the StartupRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StartupRequestUpdateInput, StartupRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * StartupRequest delete
+   */
+  export type StartupRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    /**
+     * Filter which StartupRequest to delete.
+     */
+    where: StartupRequestWhereUniqueInput
+  }
+
+  /**
+   * StartupRequest deleteMany
+   */
+  export type StartupRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StartupRequests to delete
+     */
+    where?: StartupRequestWhereInput
+    /**
+     * Limit how many StartupRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StartupRequest.requestBy
+   */
+  export type StartupRequest$requestByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * StartupRequest.startup
+   */
+  export type StartupRequest$startupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Startup
+     */
+    select?: StartupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Startup
+     */
+    omit?: StartupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupInclude<ExtArgs> | null
+    where?: StartupWhereInput
+    orderBy?: StartupOrderByWithRelationInput | StartupOrderByWithRelationInput[]
+    cursor?: StartupWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StartupScalarFieldEnum | StartupScalarFieldEnum[]
+  }
+
+  /**
+   * StartupRequest without action
+   */
+  export type StartupRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Startup
    */
 
   export type AggregateStartup = {
     _count: StartupCountAggregateOutputType | null
+    _avg: StartupAvgAggregateOutputType | null
+    _sum: StartupSumAggregateOutputType | null
     _min: StartupMinAggregateOutputType | null
     _max: StartupMaxAggregateOutputType | null
+  }
+
+  export type StartupAvgAggregateOutputType = {
+    startupRequestId: number | null
+  }
+
+  export type StartupSumAggregateOutputType = {
+    startupRequestId: number | null
   }
 
   export type StartupMinAggregateOutputType = {
@@ -7182,6 +8479,7 @@ export namespace Prisma {
     creatorUser: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    startupRequestId: number | null
   }
 
   export type StartupMaxAggregateOutputType = {
@@ -7192,6 +8490,7 @@ export namespace Prisma {
     creatorUser: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    startupRequestId: number | null
   }
 
   export type StartupCountAggregateOutputType = {
@@ -7202,9 +8501,18 @@ export namespace Prisma {
     creatorUser: number
     createdAt: number
     updatedAt: number
+    startupRequestId: number
     _all: number
   }
 
+
+  export type StartupAvgAggregateInputType = {
+    startupRequestId?: true
+  }
+
+  export type StartupSumAggregateInputType = {
+    startupRequestId?: true
+  }
 
   export type StartupMinAggregateInputType = {
     id?: true
@@ -7214,6 +8522,7 @@ export namespace Prisma {
     creatorUser?: true
     createdAt?: true
     updatedAt?: true
+    startupRequestId?: true
   }
 
   export type StartupMaxAggregateInputType = {
@@ -7224,6 +8533,7 @@ export namespace Prisma {
     creatorUser?: true
     createdAt?: true
     updatedAt?: true
+    startupRequestId?: true
   }
 
   export type StartupCountAggregateInputType = {
@@ -7234,6 +8544,7 @@ export namespace Prisma {
     creatorUser?: true
     createdAt?: true
     updatedAt?: true
+    startupRequestId?: true
     _all?: true
   }
 
@@ -7275,6 +8586,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: StartupAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StartupSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: StartupMinAggregateInputType
@@ -7305,6 +8628,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: StartupCountAggregateInputType | true
+    _avg?: StartupAvgAggregateInputType
+    _sum?: StartupSumAggregateInputType
     _min?: StartupMinAggregateInputType
     _max?: StartupMaxAggregateInputType
   }
@@ -7317,7 +8642,10 @@ export namespace Prisma {
     creatorUser: string
     createdAt: Date
     updatedAt: Date
+    startupRequestId: number | null
     _count: StartupCountAggregateOutputType | null
+    _avg: StartupAvgAggregateOutputType | null
+    _sum: StartupSumAggregateOutputType | null
     _min: StartupMinAggregateOutputType | null
     _max: StartupMaxAggregateOutputType | null
   }
@@ -7344,10 +8672,12 @@ export namespace Prisma {
     creatorUser?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    startupRequestId?: boolean
     images?: boolean | Startup$imagesArgs<ExtArgs>
     participants?: boolean | Startup$participantsArgs<ExtArgs>
     tags?: boolean | Startup$tagsArgs<ExtArgs>
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
     _count?: boolean | StartupCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["startup"]>
 
@@ -7359,7 +8689,9 @@ export namespace Prisma {
     creatorUser?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    startupRequestId?: boolean
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
   }, ExtArgs["result"]["startup"]>
 
   export type StartupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7370,7 +8702,9 @@ export namespace Prisma {
     creatorUser?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    startupRequestId?: boolean
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
   }, ExtArgs["result"]["startup"]>
 
   export type StartupSelectScalar = {
@@ -7381,21 +8715,25 @@ export namespace Prisma {
     creatorUser?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    startupRequestId?: boolean
   }
 
-  export type StartupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "websiteUrl" | "creatorUser" | "createdAt" | "updatedAt", ExtArgs["result"]["startup"]>
+  export type StartupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "websiteUrl" | "creatorUser" | "createdAt" | "updatedAt" | "startupRequestId", ExtArgs["result"]["startup"]>
   export type StartupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     images?: boolean | Startup$imagesArgs<ExtArgs>
     participants?: boolean | Startup$participantsArgs<ExtArgs>
     tags?: boolean | Startup$tagsArgs<ExtArgs>
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
     _count?: boolean | StartupCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StartupIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
   }
   export type StartupIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     creatorId?: boolean | UserDefaultArgs<ExtArgs>
+    StartupRequest?: boolean | Startup$StartupRequestArgs<ExtArgs>
   }
 
   export type $StartupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7405,6 +8743,7 @@ export namespace Prisma {
       participants: Prisma.$UserPayload<ExtArgs>[]
       tags: Prisma.$TagPayload<ExtArgs>[]
       creatorId: Prisma.$UserPayload<ExtArgs>
+      StartupRequest: Prisma.$StartupRequestPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7414,6 +8753,7 @@ export namespace Prisma {
       creatorUser: string
       createdAt: Date
       updatedAt: Date
+      startupRequestId: number | null
     }, ExtArgs["result"]["startup"]>
     composites: {}
   }
@@ -7812,6 +9152,7 @@ export namespace Prisma {
     participants<T extends Startup$participantsArgs<ExtArgs> = {}>(args?: Subset<T, Startup$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tags<T extends Startup$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Startup$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     creatorId<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    StartupRequest<T extends Startup$StartupRequestArgs<ExtArgs> = {}>(args?: Subset<T, Startup$StartupRequestArgs<ExtArgs>>): Prisma__StartupRequestClient<$Result.GetResult<Prisma.$StartupRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7848,6 +9189,7 @@ export namespace Prisma {
     readonly creatorUser: FieldRef<"Startup", 'String'>
     readonly createdAt: FieldRef<"Startup", 'DateTime'>
     readonly updatedAt: FieldRef<"Startup", 'DateTime'>
+    readonly startupRequestId: FieldRef<"Startup", 'Int'>
   }
     
 
@@ -8313,6 +9655,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Startup.StartupRequest
+   */
+  export type Startup$StartupRequestArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StartupRequest
+     */
+    select?: StartupRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StartupRequest
+     */
+    omit?: StartupRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StartupRequestInclude<ExtArgs> | null
+    where?: StartupRequestWhereInput
   }
 
   /**
@@ -9448,6 +10809,16 @@ export namespace Prisma {
   export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
 
 
+  export const StartupRequestScalarFieldEnum: {
+    id: 'id',
+    message: 'message',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StartupRequestScalarFieldEnum = (typeof StartupRequestScalarFieldEnum)[keyof typeof StartupRequestScalarFieldEnum]
+
+
   export const StartupScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -9455,7 +10826,8 @@ export namespace Prisma {
     websiteUrl: 'websiteUrl',
     creatorUser: 'creatorUser',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    startupRequestId: 'startupRequestId'
   };
 
   export type StartupScalarFieldEnum = (typeof StartupScalarFieldEnum)[keyof typeof StartupScalarFieldEnum]
@@ -9580,6 +10952,7 @@ export namespace Prisma {
     emailVerified?: BoolFilter<"User"> | boolean
     tags?: TagListRelationFilter
     createdStartups?: StartupListRelationFilter
+    receivedStartupRequests?: StartupRequestListRelationFilter
     participatingStartups?: StartupListRelationFilter
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
@@ -9597,6 +10970,7 @@ export namespace Prisma {
     emailVerified?: SortOrder
     tags?: TagOrderByRelationAggregateInput
     createdStartups?: StartupOrderByRelationAggregateInput
+    receivedStartupRequests?: StartupRequestOrderByRelationAggregateInput
     participatingStartups?: StartupOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
@@ -9617,6 +10991,7 @@ export namespace Prisma {
     emailVerified?: BoolFilter<"User"> | boolean
     tags?: TagListRelationFilter
     createdStartups?: StartupListRelationFilter
+    receivedStartupRequests?: StartupRequestListRelationFilter
     participatingStartups?: StartupListRelationFilter
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
@@ -9919,6 +11294,61 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Tag"> | string
   }
 
+  export type StartupRequestWhereInput = {
+    AND?: StartupRequestWhereInput | StartupRequestWhereInput[]
+    OR?: StartupRequestWhereInput[]
+    NOT?: StartupRequestWhereInput | StartupRequestWhereInput[]
+    id?: IntFilter<"StartupRequest"> | number
+    message?: StringFilter<"StartupRequest"> | string
+    createdAt?: DateTimeFilter<"StartupRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"StartupRequest"> | Date | string
+    requestBy?: UserListRelationFilter
+    startup?: StartupListRelationFilter
+  }
+
+  export type StartupRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    requestBy?: UserOrderByRelationAggregateInput
+    startup?: StartupOrderByRelationAggregateInput
+  }
+
+  export type StartupRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: StartupRequestWhereInput | StartupRequestWhereInput[]
+    OR?: StartupRequestWhereInput[]
+    NOT?: StartupRequestWhereInput | StartupRequestWhereInput[]
+    message?: StringFilter<"StartupRequest"> | string
+    createdAt?: DateTimeFilter<"StartupRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"StartupRequest"> | Date | string
+    requestBy?: UserListRelationFilter
+    startup?: StartupListRelationFilter
+  }, "id">
+
+  export type StartupRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StartupRequestCountOrderByAggregateInput
+    _avg?: StartupRequestAvgOrderByAggregateInput
+    _max?: StartupRequestMaxOrderByAggregateInput
+    _min?: StartupRequestMinOrderByAggregateInput
+    _sum?: StartupRequestSumOrderByAggregateInput
+  }
+
+  export type StartupRequestScalarWhereWithAggregatesInput = {
+    AND?: StartupRequestScalarWhereWithAggregatesInput | StartupRequestScalarWhereWithAggregatesInput[]
+    OR?: StartupRequestScalarWhereWithAggregatesInput[]
+    NOT?: StartupRequestScalarWhereWithAggregatesInput | StartupRequestScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"StartupRequest"> | number
+    message?: StringWithAggregatesFilter<"StartupRequest"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"StartupRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StartupRequest"> | Date | string
+  }
+
   export type StartupWhereInput = {
     AND?: StartupWhereInput | StartupWhereInput[]
     OR?: StartupWhereInput[]
@@ -9930,10 +11360,12 @@ export namespace Prisma {
     creatorUser?: StringFilter<"Startup"> | string
     createdAt?: DateTimeFilter<"Startup"> | Date | string
     updatedAt?: DateTimeFilter<"Startup"> | Date | string
+    startupRequestId?: IntNullableFilter<"Startup"> | number | null
     images?: ImagesListRelationFilter
     participants?: UserListRelationFilter
     tags?: TagListRelationFilter
     creatorId?: XOR<UserScalarRelationFilter, UserWhereInput>
+    StartupRequest?: XOR<StartupRequestNullableScalarRelationFilter, StartupRequestWhereInput> | null
   }
 
   export type StartupOrderByWithRelationInput = {
@@ -9944,10 +11376,12 @@ export namespace Prisma {
     creatorUser?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    startupRequestId?: SortOrderInput | SortOrder
     images?: ImagesOrderByRelationAggregateInput
     participants?: UserOrderByRelationAggregateInput
     tags?: TagOrderByRelationAggregateInput
     creatorId?: UserOrderByWithRelationInput
+    StartupRequest?: StartupRequestOrderByWithRelationInput
   }
 
   export type StartupWhereUniqueInput = Prisma.AtLeast<{
@@ -9961,10 +11395,12 @@ export namespace Prisma {
     creatorUser?: StringFilter<"Startup"> | string
     createdAt?: DateTimeFilter<"Startup"> | Date | string
     updatedAt?: DateTimeFilter<"Startup"> | Date | string
+    startupRequestId?: IntNullableFilter<"Startup"> | number | null
     images?: ImagesListRelationFilter
     participants?: UserListRelationFilter
     tags?: TagListRelationFilter
     creatorId?: XOR<UserScalarRelationFilter, UserWhereInput>
+    StartupRequest?: XOR<StartupRequestNullableScalarRelationFilter, StartupRequestWhereInput> | null
   }, "id">
 
   export type StartupOrderByWithAggregationInput = {
@@ -9975,9 +11411,12 @@ export namespace Prisma {
     creatorUser?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    startupRequestId?: SortOrderInput | SortOrder
     _count?: StartupCountOrderByAggregateInput
+    _avg?: StartupAvgOrderByAggregateInput
     _max?: StartupMaxOrderByAggregateInput
     _min?: StartupMinOrderByAggregateInput
+    _sum?: StartupSumOrderByAggregateInput
   }
 
   export type StartupScalarWhereWithAggregatesInput = {
@@ -9991,6 +11430,7 @@ export namespace Prisma {
     creatorUser?: StringWithAggregatesFilter<"Startup"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Startup"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Startup"> | Date | string
+    startupRequestId?: IntNullableWithAggregatesFilter<"Startup"> | number | null
   }
 
   export type ImagesWhereInput = {
@@ -10050,6 +11490,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagCreateNestedManyWithoutUserInput
     createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -10067,6 +11508,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
     createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -10084,6 +11526,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -10101,6 +11544,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -10435,6 +11879,60 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
   }
 
+  export type StartupRequestCreateInput = {
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requestBy?: UserCreateNestedManyWithoutReceivedStartupRequestsInput
+    startup?: StartupCreateNestedManyWithoutStartupRequestInput
+  }
+
+  export type StartupRequestUncheckedCreateInput = {
+    id?: number
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requestBy?: UserUncheckedCreateNestedManyWithoutReceivedStartupRequestsInput
+    startup?: StartupUncheckedCreateNestedManyWithoutStartupRequestInput
+  }
+
+  export type StartupRequestUpdateInput = {
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requestBy?: UserUpdateManyWithoutReceivedStartupRequestsNestedInput
+    startup?: StartupUpdateManyWithoutStartupRequestNestedInput
+  }
+
+  export type StartupRequestUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requestBy?: UserUncheckedUpdateManyWithoutReceivedStartupRequestsNestedInput
+    startup?: StartupUncheckedUpdateManyWithoutStartupRequestNestedInput
+  }
+
+  export type StartupRequestCreateManyInput = {
+    id?: number
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StartupRequestUpdateManyMutationInput = {
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StartupRequestUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StartupCreateInput = {
     id?: string
     name: string
@@ -10446,6 +11944,7 @@ export namespace Prisma {
     participants?: UserCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagCreateNestedManyWithoutStartupInput
     creatorId: UserCreateNestedOneWithoutCreatedStartupsInput
+    StartupRequest?: StartupRequestCreateNestedOneWithoutStartupInput
   }
 
   export type StartupUncheckedCreateInput = {
@@ -10456,6 +11955,7 @@ export namespace Prisma {
     creatorUser: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
     images?: ImagesUncheckedCreateNestedManyWithoutStartupInput
     participants?: UserUncheckedCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagUncheckedCreateNestedManyWithoutStartupInput
@@ -10472,6 +11972,7 @@ export namespace Prisma {
     participants?: UserUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUpdateManyWithoutStartupNestedInput
     creatorId?: UserUpdateOneRequiredWithoutCreatedStartupsNestedInput
+    StartupRequest?: StartupRequestUpdateOneWithoutStartupNestedInput
   }
 
   export type StartupUncheckedUpdateInput = {
@@ -10482,6 +11983,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ImagesUncheckedUpdateManyWithoutStartupNestedInput
     participants?: UserUncheckedUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUncheckedUpdateManyWithoutStartupNestedInput
@@ -10495,6 +11997,7 @@ export namespace Prisma {
     creatorUser: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
   }
 
   export type StartupUpdateManyMutationInput = {
@@ -10514,6 +12017,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ImagesCreateInput = {
@@ -10615,6 +12119,12 @@ export namespace Prisma {
     none?: StartupWhereInput
   }
 
+  export type StartupRequestListRelationFilter = {
+    every?: StartupRequestWhereInput
+    some?: StartupRequestWhereInput
+    none?: StartupRequestWhereInput
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -10637,6 +12147,10 @@ export namespace Prisma {
   }
 
   export type StartupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StartupRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10940,10 +12454,55 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type StartupRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StartupRequestAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type StartupRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StartupRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StartupRequestSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type ImagesListRelationFilter = {
     every?: ImagesWhereInput
     some?: ImagesWhereInput
     none?: ImagesWhereInput
+  }
+
+  export type StartupRequestNullableScalarRelationFilter = {
+    is?: StartupRequestWhereInput | null
+    isNot?: StartupRequestWhereInput | null
   }
 
   export type ImagesOrderByRelationAggregateInput = {
@@ -10958,6 +12517,11 @@ export namespace Prisma {
     creatorUser?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    startupRequestId?: SortOrder
+  }
+
+  export type StartupAvgOrderByAggregateInput = {
+    startupRequestId?: SortOrder
   }
 
   export type StartupMaxOrderByAggregateInput = {
@@ -10968,6 +12532,7 @@ export namespace Prisma {
     creatorUser?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    startupRequestId?: SortOrder
   }
 
   export type StartupMinOrderByAggregateInput = {
@@ -10978,6 +12543,27 @@ export namespace Prisma {
     creatorUser?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    startupRequestId?: SortOrder
+  }
+
+  export type StartupSumOrderByAggregateInput = {
+    startupRequestId?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type StartupScalarRelationFilter = {
@@ -11016,6 +12602,12 @@ export namespace Prisma {
     connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
   }
 
+  export type StartupRequestCreateNestedManyWithoutRequestByInput = {
+    create?: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput> | StartupRequestCreateWithoutRequestByInput[] | StartupRequestUncheckedCreateWithoutRequestByInput[]
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutRequestByInput | StartupRequestCreateOrConnectWithoutRequestByInput[]
+    connect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+  }
+
   export type StartupCreateNestedManyWithoutParticipantsInput = {
     create?: XOR<StartupCreateWithoutParticipantsInput, StartupUncheckedCreateWithoutParticipantsInput> | StartupCreateWithoutParticipantsInput[] | StartupUncheckedCreateWithoutParticipantsInput[]
     connectOrCreate?: StartupCreateOrConnectWithoutParticipantsInput | StartupCreateOrConnectWithoutParticipantsInput[]
@@ -11047,6 +12639,12 @@ export namespace Prisma {
     connectOrCreate?: StartupCreateOrConnectWithoutCreatorIdInput | StartupCreateOrConnectWithoutCreatorIdInput[]
     createMany?: StartupCreateManyCreatorIdInputEnvelope
     connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+  }
+
+  export type StartupRequestUncheckedCreateNestedManyWithoutRequestByInput = {
+    create?: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput> | StartupRequestCreateWithoutRequestByInput[] | StartupRequestUncheckedCreateWithoutRequestByInput[]
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutRequestByInput | StartupRequestCreateOrConnectWithoutRequestByInput[]
+    connect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
   }
 
   export type StartupUncheckedCreateNestedManyWithoutParticipantsInput = {
@@ -11110,6 +12708,19 @@ export namespace Prisma {
     update?: StartupUpdateWithWhereUniqueWithoutCreatorIdInput | StartupUpdateWithWhereUniqueWithoutCreatorIdInput[]
     updateMany?: StartupUpdateManyWithWhereWithoutCreatorIdInput | StartupUpdateManyWithWhereWithoutCreatorIdInput[]
     deleteMany?: StartupScalarWhereInput | StartupScalarWhereInput[]
+  }
+
+  export type StartupRequestUpdateManyWithoutRequestByNestedInput = {
+    create?: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput> | StartupRequestCreateWithoutRequestByInput[] | StartupRequestUncheckedCreateWithoutRequestByInput[]
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutRequestByInput | StartupRequestCreateOrConnectWithoutRequestByInput[]
+    upsert?: StartupRequestUpsertWithWhereUniqueWithoutRequestByInput | StartupRequestUpsertWithWhereUniqueWithoutRequestByInput[]
+    set?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    disconnect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    delete?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    connect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    update?: StartupRequestUpdateWithWhereUniqueWithoutRequestByInput | StartupRequestUpdateWithWhereUniqueWithoutRequestByInput[]
+    updateMany?: StartupRequestUpdateManyWithWhereWithoutRequestByInput | StartupRequestUpdateManyWithWhereWithoutRequestByInput[]
+    deleteMany?: StartupRequestScalarWhereInput | StartupRequestScalarWhereInput[]
   }
 
   export type StartupUpdateManyWithoutParticipantsNestedInput = {
@@ -11178,6 +12789,19 @@ export namespace Prisma {
     update?: StartupUpdateWithWhereUniqueWithoutCreatorIdInput | StartupUpdateWithWhereUniqueWithoutCreatorIdInput[]
     updateMany?: StartupUpdateManyWithWhereWithoutCreatorIdInput | StartupUpdateManyWithWhereWithoutCreatorIdInput[]
     deleteMany?: StartupScalarWhereInput | StartupScalarWhereInput[]
+  }
+
+  export type StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput = {
+    create?: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput> | StartupRequestCreateWithoutRequestByInput[] | StartupRequestUncheckedCreateWithoutRequestByInput[]
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutRequestByInput | StartupRequestCreateOrConnectWithoutRequestByInput[]
+    upsert?: StartupRequestUpsertWithWhereUniqueWithoutRequestByInput | StartupRequestUpsertWithWhereUniqueWithoutRequestByInput[]
+    set?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    disconnect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    delete?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    connect?: StartupRequestWhereUniqueInput | StartupRequestWhereUniqueInput[]
+    update?: StartupRequestUpdateWithWhereUniqueWithoutRequestByInput | StartupRequestUpdateWithWhereUniqueWithoutRequestByInput[]
+    updateMany?: StartupRequestUpdateManyWithWhereWithoutRequestByInput | StartupRequestUpdateManyWithWhereWithoutRequestByInput[]
+    deleteMany?: StartupRequestScalarWhereInput | StartupRequestScalarWhereInput[]
   }
 
   export type StartupUncheckedUpdateManyWithoutParticipantsNestedInput = {
@@ -11337,6 +12961,86 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type UserCreateNestedManyWithoutReceivedStartupRequestsInput = {
+    create?: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput> | UserCreateWithoutReceivedStartupRequestsInput[] | UserUncheckedCreateWithoutReceivedStartupRequestsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedStartupRequestsInput | UserCreateOrConnectWithoutReceivedStartupRequestsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type StartupCreateNestedManyWithoutStartupRequestInput = {
+    create?: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput> | StartupCreateWithoutStartupRequestInput[] | StartupUncheckedCreateWithoutStartupRequestInput[]
+    connectOrCreate?: StartupCreateOrConnectWithoutStartupRequestInput | StartupCreateOrConnectWithoutStartupRequestInput[]
+    createMany?: StartupCreateManyStartupRequestInputEnvelope
+    connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutReceivedStartupRequestsInput = {
+    create?: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput> | UserCreateWithoutReceivedStartupRequestsInput[] | UserUncheckedCreateWithoutReceivedStartupRequestsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedStartupRequestsInput | UserCreateOrConnectWithoutReceivedStartupRequestsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type StartupUncheckedCreateNestedManyWithoutStartupRequestInput = {
+    create?: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput> | StartupCreateWithoutStartupRequestInput[] | StartupUncheckedCreateWithoutStartupRequestInput[]
+    connectOrCreate?: StartupCreateOrConnectWithoutStartupRequestInput | StartupCreateOrConnectWithoutStartupRequestInput[]
+    createMany?: StartupCreateManyStartupRequestInputEnvelope
+    connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+  }
+
+  export type UserUpdateManyWithoutReceivedStartupRequestsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput> | UserCreateWithoutReceivedStartupRequestsInput[] | UserUncheckedCreateWithoutReceivedStartupRequestsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedStartupRequestsInput | UserCreateOrConnectWithoutReceivedStartupRequestsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutReceivedStartupRequestsInput | UserUpsertWithWhereUniqueWithoutReceivedStartupRequestsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutReceivedStartupRequestsInput | UserUpdateWithWhereUniqueWithoutReceivedStartupRequestsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutReceivedStartupRequestsInput | UserUpdateManyWithWhereWithoutReceivedStartupRequestsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type StartupUpdateManyWithoutStartupRequestNestedInput = {
+    create?: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput> | StartupCreateWithoutStartupRequestInput[] | StartupUncheckedCreateWithoutStartupRequestInput[]
+    connectOrCreate?: StartupCreateOrConnectWithoutStartupRequestInput | StartupCreateOrConnectWithoutStartupRequestInput[]
+    upsert?: StartupUpsertWithWhereUniqueWithoutStartupRequestInput | StartupUpsertWithWhereUniqueWithoutStartupRequestInput[]
+    createMany?: StartupCreateManyStartupRequestInputEnvelope
+    set?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    disconnect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    delete?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    update?: StartupUpdateWithWhereUniqueWithoutStartupRequestInput | StartupUpdateWithWhereUniqueWithoutStartupRequestInput[]
+    updateMany?: StartupUpdateManyWithWhereWithoutStartupRequestInput | StartupUpdateManyWithWhereWithoutStartupRequestInput[]
+    deleteMany?: StartupScalarWhereInput | StartupScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutReceivedStartupRequestsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput> | UserCreateWithoutReceivedStartupRequestsInput[] | UserUncheckedCreateWithoutReceivedStartupRequestsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedStartupRequestsInput | UserCreateOrConnectWithoutReceivedStartupRequestsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutReceivedStartupRequestsInput | UserUpsertWithWhereUniqueWithoutReceivedStartupRequestsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutReceivedStartupRequestsInput | UserUpdateWithWhereUniqueWithoutReceivedStartupRequestsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutReceivedStartupRequestsInput | UserUpdateManyWithWhereWithoutReceivedStartupRequestsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type StartupUncheckedUpdateManyWithoutStartupRequestNestedInput = {
+    create?: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput> | StartupCreateWithoutStartupRequestInput[] | StartupUncheckedCreateWithoutStartupRequestInput[]
+    connectOrCreate?: StartupCreateOrConnectWithoutStartupRequestInput | StartupCreateOrConnectWithoutStartupRequestInput[]
+    upsert?: StartupUpsertWithWhereUniqueWithoutStartupRequestInput | StartupUpsertWithWhereUniqueWithoutStartupRequestInput[]
+    createMany?: StartupCreateManyStartupRequestInputEnvelope
+    set?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    disconnect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    delete?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    connect?: StartupWhereUniqueInput | StartupWhereUniqueInput[]
+    update?: StartupUpdateWithWhereUniqueWithoutStartupRequestInput | StartupUpdateWithWhereUniqueWithoutStartupRequestInput[]
+    updateMany?: StartupUpdateManyWithWhereWithoutStartupRequestInput | StartupUpdateManyWithWhereWithoutStartupRequestInput[]
+    deleteMany?: StartupScalarWhereInput | StartupScalarWhereInput[]
+  }
+
   export type ImagesCreateNestedManyWithoutStartupInput = {
     create?: XOR<ImagesCreateWithoutStartupInput, ImagesUncheckedCreateWithoutStartupInput> | ImagesCreateWithoutStartupInput[] | ImagesUncheckedCreateWithoutStartupInput[]
     connectOrCreate?: ImagesCreateOrConnectWithoutStartupInput | ImagesCreateOrConnectWithoutStartupInput[]
@@ -11360,6 +13064,12 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutCreatedStartupsInput, UserUncheckedCreateWithoutCreatedStartupsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreatedStartupsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type StartupRequestCreateNestedOneWithoutStartupInput = {
+    create?: XOR<StartupRequestCreateWithoutStartupInput, StartupRequestUncheckedCreateWithoutStartupInput>
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutStartupInput
+    connect?: StartupRequestWhereUniqueInput
   }
 
   export type ImagesUncheckedCreateNestedManyWithoutStartupInput = {
@@ -11427,6 +13137,24 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCreatedStartupsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedStartupsInput, UserUpdateWithoutCreatedStartupsInput>, UserUncheckedUpdateWithoutCreatedStartupsInput>
+  }
+
+  export type StartupRequestUpdateOneWithoutStartupNestedInput = {
+    create?: XOR<StartupRequestCreateWithoutStartupInput, StartupRequestUncheckedCreateWithoutStartupInput>
+    connectOrCreate?: StartupRequestCreateOrConnectWithoutStartupInput
+    upsert?: StartupRequestUpsertWithoutStartupInput
+    disconnect?: StartupRequestWhereInput | boolean
+    delete?: StartupRequestWhereInput | boolean
+    connect?: StartupRequestWhereUniqueInput
+    update?: XOR<XOR<StartupRequestUpdateToOneWithWhereWithoutStartupInput, StartupRequestUpdateWithoutStartupInput>, StartupRequestUncheckedUpdateWithoutStartupInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ImagesUncheckedUpdateManyWithoutStartupNestedInput = {
@@ -11657,6 +13385,33 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type TagCreateWithoutUserInput = {
     id: number
     name: string
@@ -11684,6 +13439,7 @@ export namespace Prisma {
     images?: ImagesCreateNestedManyWithoutStartupInput
     participants?: UserCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagCreateNestedManyWithoutStartupInput
+    StartupRequest?: StartupRequestCreateNestedOneWithoutStartupInput
   }
 
   export type StartupUncheckedCreateWithoutCreatorIdInput = {
@@ -11693,6 +13449,7 @@ export namespace Prisma {
     websiteUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
     images?: ImagesUncheckedCreateNestedManyWithoutStartupInput
     participants?: UserUncheckedCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagUncheckedCreateNestedManyWithoutStartupInput
@@ -11708,6 +13465,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StartupRequestCreateWithoutRequestByInput = {
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    startup?: StartupCreateNestedManyWithoutStartupRequestInput
+  }
+
+  export type StartupRequestUncheckedCreateWithoutRequestByInput = {
+    id?: number
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    startup?: StartupUncheckedCreateNestedManyWithoutStartupRequestInput
+  }
+
+  export type StartupRequestCreateOrConnectWithoutRequestByInput = {
+    where: StartupRequestWhereUniqueInput
+    create: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput>
+  }
+
   export type StartupCreateWithoutParticipantsInput = {
     id?: string
     name: string
@@ -11718,6 +13495,7 @@ export namespace Prisma {
     images?: ImagesCreateNestedManyWithoutStartupInput
     tags?: TagCreateNestedManyWithoutStartupInput
     creatorId: UserCreateNestedOneWithoutCreatedStartupsInput
+    StartupRequest?: StartupRequestCreateNestedOneWithoutStartupInput
   }
 
   export type StartupUncheckedCreateWithoutParticipantsInput = {
@@ -11728,6 +13506,7 @@ export namespace Prisma {
     creatorUser: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
     images?: ImagesUncheckedCreateNestedManyWithoutStartupInput
     tags?: TagUncheckedCreateNestedManyWithoutStartupInput
   }
@@ -11858,6 +13637,33 @@ export namespace Prisma {
     creatorUser?: StringFilter<"Startup"> | string
     createdAt?: DateTimeFilter<"Startup"> | Date | string
     updatedAt?: DateTimeFilter<"Startup"> | Date | string
+    startupRequestId?: IntNullableFilter<"Startup"> | number | null
+  }
+
+  export type StartupRequestUpsertWithWhereUniqueWithoutRequestByInput = {
+    where: StartupRequestWhereUniqueInput
+    update: XOR<StartupRequestUpdateWithoutRequestByInput, StartupRequestUncheckedUpdateWithoutRequestByInput>
+    create: XOR<StartupRequestCreateWithoutRequestByInput, StartupRequestUncheckedCreateWithoutRequestByInput>
+  }
+
+  export type StartupRequestUpdateWithWhereUniqueWithoutRequestByInput = {
+    where: StartupRequestWhereUniqueInput
+    data: XOR<StartupRequestUpdateWithoutRequestByInput, StartupRequestUncheckedUpdateWithoutRequestByInput>
+  }
+
+  export type StartupRequestUpdateManyWithWhereWithoutRequestByInput = {
+    where: StartupRequestScalarWhereInput
+    data: XOR<StartupRequestUpdateManyMutationInput, StartupRequestUncheckedUpdateManyWithoutRequestByInput>
+  }
+
+  export type StartupRequestScalarWhereInput = {
+    AND?: StartupRequestScalarWhereInput | StartupRequestScalarWhereInput[]
+    OR?: StartupRequestScalarWhereInput[]
+    NOT?: StartupRequestScalarWhereInput | StartupRequestScalarWhereInput[]
+    id?: IntFilter<"StartupRequest"> | number
+    message?: StringFilter<"StartupRequest"> | string
+    createdAt?: DateTimeFilter<"StartupRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"StartupRequest"> | Date | string
   }
 
   export type StartupUpsertWithWhereUniqueWithoutParticipantsInput = {
@@ -11953,6 +13759,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagCreateNestedManyWithoutUserInput
     createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
     accounts?: AccountCreateNestedManyWithoutUserInput
   }
@@ -11969,6 +13776,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
     createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
   }
@@ -12001,6 +13809,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
   }
@@ -12017,6 +13826,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -12033,6 +13843,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagCreateNestedManyWithoutUserInput
     createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
     sessions?: SessionCreateNestedManyWithoutUserInput
   }
@@ -12049,6 +13860,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
     createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -12081,6 +13893,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
   }
@@ -12097,6 +13910,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -12111,6 +13925,7 @@ export namespace Prisma {
     images?: ImagesCreateNestedManyWithoutStartupInput
     participants?: UserCreateNestedManyWithoutParticipatingStartupsInput
     creatorId: UserCreateNestedOneWithoutCreatedStartupsInput
+    StartupRequest?: StartupRequestCreateNestedOneWithoutStartupInput
   }
 
   export type StartupUncheckedCreateWithoutTagsInput = {
@@ -12121,6 +13936,7 @@ export namespace Prisma {
     creatorUser: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
     images?: ImagesUncheckedCreateNestedManyWithoutStartupInput
     participants?: UserUncheckedCreateNestedManyWithoutParticipatingStartupsInput
   }
@@ -12141,6 +13957,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emailVerified: boolean
     createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -12157,6 +13974,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emailVerified: boolean
     createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -12214,6 +14032,113 @@ export namespace Prisma {
     emailVerified?: BoolFilter<"User"> | boolean
   }
 
+  export type UserCreateWithoutReceivedStartupRequestsInput = {
+    id?: string
+    username?: string | null
+    email: string
+    name?: string | null
+    image?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    tags?: TagCreateNestedManyWithoutUserInput
+    createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReceivedStartupRequestsInput = {
+    id?: string
+    username?: string | null
+    email: string
+    name?: string | null
+    image?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified: boolean
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReceivedStartupRequestsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput>
+  }
+
+  export type StartupCreateWithoutStartupRequestInput = {
+    id?: string
+    name: string
+    description: string
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: ImagesCreateNestedManyWithoutStartupInput
+    participants?: UserCreateNestedManyWithoutParticipatingStartupsInput
+    tags?: TagCreateNestedManyWithoutStartupInput
+    creatorId: UserCreateNestedOneWithoutCreatedStartupsInput
+  }
+
+  export type StartupUncheckedCreateWithoutStartupRequestInput = {
+    id?: string
+    name: string
+    description: string
+    websiteUrl?: string | null
+    creatorUser: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: ImagesUncheckedCreateNestedManyWithoutStartupInput
+    participants?: UserUncheckedCreateNestedManyWithoutParticipatingStartupsInput
+    tags?: TagUncheckedCreateNestedManyWithoutStartupInput
+  }
+
+  export type StartupCreateOrConnectWithoutStartupRequestInput = {
+    where: StartupWhereUniqueInput
+    create: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput>
+  }
+
+  export type StartupCreateManyStartupRequestInputEnvelope = {
+    data: StartupCreateManyStartupRequestInput | StartupCreateManyStartupRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutReceivedStartupRequestsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutReceivedStartupRequestsInput, UserUncheckedUpdateWithoutReceivedStartupRequestsInput>
+    create: XOR<UserCreateWithoutReceivedStartupRequestsInput, UserUncheckedCreateWithoutReceivedStartupRequestsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutReceivedStartupRequestsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutReceivedStartupRequestsInput, UserUncheckedUpdateWithoutReceivedStartupRequestsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutReceivedStartupRequestsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutReceivedStartupRequestsInput>
+  }
+
+  export type StartupUpsertWithWhereUniqueWithoutStartupRequestInput = {
+    where: StartupWhereUniqueInput
+    update: XOR<StartupUpdateWithoutStartupRequestInput, StartupUncheckedUpdateWithoutStartupRequestInput>
+    create: XOR<StartupCreateWithoutStartupRequestInput, StartupUncheckedCreateWithoutStartupRequestInput>
+  }
+
+  export type StartupUpdateWithWhereUniqueWithoutStartupRequestInput = {
+    where: StartupWhereUniqueInput
+    data: XOR<StartupUpdateWithoutStartupRequestInput, StartupUncheckedUpdateWithoutStartupRequestInput>
+  }
+
+  export type StartupUpdateManyWithWhereWithoutStartupRequestInput = {
+    where: StartupScalarWhereInput
+    data: XOR<StartupUpdateManyMutationInput, StartupUncheckedUpdateManyWithoutStartupRequestInput>
+  }
+
   export type ImagesCreateWithoutStartupInput = {
     id?: string
     url: string
@@ -12246,6 +14171,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagCreateNestedManyWithoutUserInput
     createdStartups?: StartupCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
   }
@@ -12262,6 +14188,7 @@ export namespace Prisma {
     emailVerified: boolean
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
     createdStartups?: StartupUncheckedCreateNestedManyWithoutCreatorIdInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
   }
@@ -12299,6 +14226,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emailVerified: boolean
     tags?: TagCreateNestedManyWithoutUserInput
+    receivedStartupRequests?: StartupRequestCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupCreateNestedManyWithoutParticipantsInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -12315,6 +14243,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emailVerified: boolean
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    receivedStartupRequests?: StartupRequestUncheckedCreateNestedManyWithoutRequestByInput
     participatingStartups?: StartupUncheckedCreateNestedManyWithoutParticipantsInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -12323,6 +14252,26 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutCreatedStartupsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedStartupsInput, UserUncheckedCreateWithoutCreatedStartupsInput>
+  }
+
+  export type StartupRequestCreateWithoutStartupInput = {
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requestBy?: UserCreateNestedManyWithoutReceivedStartupRequestsInput
+  }
+
+  export type StartupRequestUncheckedCreateWithoutStartupInput = {
+    id?: number
+    message: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requestBy?: UserUncheckedCreateNestedManyWithoutReceivedStartupRequestsInput
+  }
+
+  export type StartupRequestCreateOrConnectWithoutStartupInput = {
+    where: StartupRequestWhereUniqueInput
+    create: XOR<StartupRequestCreateWithoutStartupInput, StartupRequestUncheckedCreateWithoutStartupInput>
   }
 
   export type ImagesUpsertWithWhereUniqueWithoutStartupInput = {
@@ -12404,6 +14353,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUpdateManyWithoutUserNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -12420,9 +14370,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type StartupRequestUpsertWithoutStartupInput = {
+    update: XOR<StartupRequestUpdateWithoutStartupInput, StartupRequestUncheckedUpdateWithoutStartupInput>
+    create: XOR<StartupRequestCreateWithoutStartupInput, StartupRequestUncheckedCreateWithoutStartupInput>
+    where?: StartupRequestWhereInput
+  }
+
+  export type StartupRequestUpdateToOneWithWhereWithoutStartupInput = {
+    where?: StartupRequestWhereInput
+    data: XOR<StartupRequestUpdateWithoutStartupInput, StartupRequestUncheckedUpdateWithoutStartupInput>
+  }
+
+  export type StartupRequestUpdateWithoutStartupInput = {
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requestBy?: UserUpdateManyWithoutReceivedStartupRequestsNestedInput
+  }
+
+  export type StartupRequestUncheckedUpdateWithoutStartupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requestBy?: UserUncheckedUpdateManyWithoutReceivedStartupRequestsNestedInput
   }
 
   export type StartupCreateWithoutImagesInput = {
@@ -12435,6 +14412,7 @@ export namespace Prisma {
     participants?: UserCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagCreateNestedManyWithoutStartupInput
     creatorId: UserCreateNestedOneWithoutCreatedStartupsInput
+    StartupRequest?: StartupRequestCreateNestedOneWithoutStartupInput
   }
 
   export type StartupUncheckedCreateWithoutImagesInput = {
@@ -12445,6 +14423,7 @@ export namespace Prisma {
     creatorUser: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
     participants?: UserUncheckedCreateNestedManyWithoutParticipatingStartupsInput
     tags?: TagUncheckedCreateNestedManyWithoutStartupInput
   }
@@ -12475,6 +14454,7 @@ export namespace Prisma {
     participants?: UserUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUpdateManyWithoutStartupNestedInput
     creatorId?: UserUpdateOneRequiredWithoutCreatedStartupsNestedInput
+    StartupRequest?: StartupRequestUpdateOneWithoutStartupNestedInput
   }
 
   export type StartupUncheckedUpdateWithoutImagesInput = {
@@ -12485,6 +14465,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
     participants?: UserUncheckedUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUncheckedUpdateManyWithoutStartupNestedInput
   }
@@ -12496,6 +14477,7 @@ export namespace Prisma {
     websiteUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    startupRequestId?: number | null
   }
 
   export type SessionCreateManyUserInput = {
@@ -12550,6 +14532,7 @@ export namespace Prisma {
     images?: ImagesUpdateManyWithoutStartupNestedInput
     participants?: UserUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUpdateManyWithoutStartupNestedInput
+    StartupRequest?: StartupRequestUpdateOneWithoutStartupNestedInput
   }
 
   export type StartupUncheckedUpdateWithoutCreatorIdInput = {
@@ -12559,6 +14542,7 @@ export namespace Prisma {
     websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ImagesUncheckedUpdateManyWithoutStartupNestedInput
     participants?: UserUncheckedUpdateManyWithoutParticipatingStartupsNestedInput
     tags?: TagUncheckedUpdateManyWithoutStartupNestedInput
@@ -12569,6 +14553,29 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type StartupRequestUpdateWithoutRequestByInput = {
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startup?: StartupUpdateManyWithoutStartupRequestNestedInput
+  }
+
+  export type StartupRequestUncheckedUpdateWithoutRequestByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startup?: StartupUncheckedUpdateManyWithoutStartupRequestNestedInput
+  }
+
+  export type StartupRequestUncheckedUpdateManyWithoutRequestByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12583,6 +14590,7 @@ export namespace Prisma {
     images?: ImagesUpdateManyWithoutStartupNestedInput
     tags?: TagUpdateManyWithoutStartupNestedInput
     creatorId?: UserUpdateOneRequiredWithoutCreatedStartupsNestedInput
+    StartupRequest?: StartupRequestUpdateOneWithoutStartupNestedInput
   }
 
   export type StartupUncheckedUpdateWithoutParticipantsInput = {
@@ -12593,6 +14601,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ImagesUncheckedUpdateManyWithoutStartupNestedInput
     tags?: TagUncheckedUpdateManyWithoutStartupNestedInput
   }
@@ -12605,6 +14614,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -12692,6 +14702,7 @@ export namespace Prisma {
     images?: ImagesUpdateManyWithoutStartupNestedInput
     participants?: UserUpdateManyWithoutParticipatingStartupsNestedInput
     creatorId?: UserUpdateOneRequiredWithoutCreatedStartupsNestedInput
+    StartupRequest?: StartupRequestUpdateOneWithoutStartupNestedInput
   }
 
   export type StartupUncheckedUpdateWithoutTagsInput = {
@@ -12702,6 +14713,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ImagesUncheckedUpdateManyWithoutStartupNestedInput
     participants?: UserUncheckedUpdateManyWithoutParticipatingStartupsNestedInput
   }
@@ -12714,6 +14726,7 @@ export namespace Prisma {
     creatorUser?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startupRequestId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type UserUpdateWithoutTagsInput = {
@@ -12727,6 +14740,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -12743,6 +14757,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -12758,6 +14773,98 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type StartupCreateManyStartupRequestInput = {
+    id?: string
+    name: string
+    description: string
+    websiteUrl?: string | null
+    creatorUser: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserUpdateWithoutReceivedStartupRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    tags?: TagUpdateManyWithoutUserNestedInput
+    createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    participatingStartups?: StartupUpdateManyWithoutParticipantsNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceivedStartupRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    participatingStartups?: StartupUncheckedUpdateManyWithoutParticipantsNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutReceivedStartupRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type StartupUpdateWithoutStartupRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: ImagesUpdateManyWithoutStartupNestedInput
+    participants?: UserUpdateManyWithoutParticipatingStartupsNestedInput
+    tags?: TagUpdateManyWithoutStartupNestedInput
+    creatorId?: UserUpdateOneRequiredWithoutCreatedStartupsNestedInput
+  }
+
+  export type StartupUncheckedUpdateWithoutStartupRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    creatorUser?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: ImagesUncheckedUpdateManyWithoutStartupNestedInput
+    participants?: UserUncheckedUpdateManyWithoutParticipatingStartupsNestedInput
+    tags?: TagUncheckedUpdateManyWithoutStartupNestedInput
+  }
+
+  export type StartupUncheckedUpdateManyWithoutStartupRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    creatorUser?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImagesCreateManyStartupInput = {
@@ -12792,6 +14899,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUpdateManyWithoutRequestByNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
   }
@@ -12808,6 +14916,7 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
     createdStartups?: StartupUncheckedUpdateManyWithoutCreatorIdNestedInput
+    receivedStartupRequests?: StartupRequestUncheckedUpdateManyWithoutRequestByNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }

@@ -9,20 +9,21 @@ datasource db {
 }
 
 model User {
-  id                    String    @id @default(uuid())
-  username              String?   @unique
-  email                 String    @unique
-  name                  String?
-  image                 String?
-  description           String?
-  tags                  Tag[]
-  createdStartups       Startup[]
-  participatingStartups Startup[] @relation("participants")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  emailVerified         Boolean
-  sessions              Session[]
-  accounts              Account[]
+  id                      String           @id @default(uuid())
+  username                String?          @unique
+  email                   String           @unique
+  name                    String?
+  image                   String?
+  description             String?
+  tags                    Tag[]
+  createdStartups         Startup[]
+  receivedStartupRequests StartupRequest[]
+  participatingStartups   Startup[]        @relation("participants")
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  emailVerified           Boolean
+  sessions                Session[]
+  accounts                Account[]
 
   @@map("user")
 }
@@ -79,18 +80,29 @@ model Tag {
   user    User[]
 }
 
+model StartupRequest {
+  id        Int       @id @default(autoincrement())
+  requestBy User[]
+  startup   Startup[]
+  message   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Startup {
-  id           String   @id @default(uuid())
-  name         String
-  description  String
-  images       Images[]
-  websiteUrl   String?
-  participants User[]   @relation("participants")
-  tags         Tag[]
-  creatorUser  String
-  creatorId    User     @relation(fields: [creatorUser], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String          @id @default(uuid())
+  name             String
+  description      String
+  images           Images[]
+  websiteUrl       String?
+  participants     User[]          @relation("participants")
+  tags             Tag[]
+  creatorUser      String
+  creatorId        User            @relation(fields: [creatorUser], references: [id], onDelete: Cascade)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  StartupRequest   StartupRequest? @relation(fields: [startupRequestId], references: [id])
+  startupRequestId Int?
 }
 
 model Images {

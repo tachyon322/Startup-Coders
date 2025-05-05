@@ -173,6 +173,13 @@ exports.Prisma.TagScalarFieldEnum = {
   name: 'name'
 };
 
+exports.Prisma.StartupRequestScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.StartupScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -180,7 +187,8 @@ exports.Prisma.StartupScalarFieldEnum = {
   websiteUrl: 'websiteUrl',
   creatorUser: 'creatorUser',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  startupRequestId: 'startupRequestId'
 };
 
 exports.Prisma.ImagesScalarFieldEnum = {
@@ -211,6 +219,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Tag: 'Tag',
+  StartupRequest: 'StartupRequest',
   Startup: 'Startup',
   Images: 'Images'
 };

@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
 import StartupCard from "./StartupCard"
 import { Pagination } from "@/components/ui/pagination"
 
@@ -16,8 +15,6 @@ interface StartupGridProps {
 }
 
 export default function StartupGrid({ startups, pagination, baseUrl }: StartupGridProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
   
   if (startups.length === 0) {
     return (
