@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Users, Calendar } from "lucide-react";
 import ImageLightbox from "@/components/ImageLightbox";
+import RequestForm from "@/components/startup/RequestForm";
 
 const StartupPage = async ({ params }: { params: Promise<{ startup: string }> }) => {
   const session = await getSession();
@@ -21,12 +22,15 @@ const StartupPage = async ({ params }: { params: Promise<{ startup: string }> })
     notFound();
   }
 
+  const isParticipant = session?.user?.id && startup.participants.some(p => p.id === session.user.id);
+  const isCreator = session?.user?.id === startup.creatorUser;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header session={session} />
       <main className="max-w-7xl mx-auto pt-8 pb-16 px-4 sm:px-6 lg:px-8">
         <Link 
-          href="/" 
+          href="/find" 
           className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 mb-6"
         >
           ← Вернуться к списку стартапов
@@ -68,13 +72,41 @@ const StartupPage = async ({ params }: { params: Promise<{ startup: string }> })
           {/* Right card */}
           <div className="md:w-1/3">
             <div className="bg-gray-50 rounded-xs overflow-hidden">
-              {/* Join button */}
+              {/* Join button or form */}
               <div className="p-6">
-                <button 
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-                >
-                  Присоединиться
-                </button>
+                {!session ? (
+                  <Link 
+                    href="/auth/signin"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors inline-block text-center"
+                  >
+                    Войти для участия
+                  </Link>
+                ) : isCreator ? (
+                  <button 
+                    disabled
+                    className="w-full bg-gray-300 text-gray-500 font-medium py-3 px-4 rounded-lg cursor-not-allowed"
+                  >
+                    Вы создатель проекта
+                  </button>
+                ) : isParticipant ? (
+                  <button 
+                    disabled
+                    className="w-full bg-gray-300 text-gray-500 font-medium py-3 px-4 rounded-lg cursor-not-allowed"
+                  >
+                    Вы уже участник
+                  </button>
+                ) : (
+                  <RequestForm 
+                    startupId={startupId}
+                    onSuccess={() => {
+                      // Refresh the page to show updated state
+                      window.location.reload();
+                    }}
+                    onError={(error) => {
+                      alert(error);
+                    }}
+                  />
+                )}
                 
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <div className="flex items-center text-gray-500 text-sm">

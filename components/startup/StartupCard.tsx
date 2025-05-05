@@ -40,8 +40,8 @@ export default function StartupCard({ startup }: StartupCardProps) {
       : startup.description
 
   return (
-    <Link href={`/startup/${startup.id}`} className="block">
-      <div className="bg-white rounded-xs overflow-hidden border border-gray-100 hover:bg-gray-50 transition-all duration-200">
+    <Link href={`/startup/${startup.id}`} className="block h-full">
+      <div className="bg-white rounded-xs overflow-hidden border border-gray-100 hover:bg-gray-50 transition-all duration-200 h-full flex flex-col">
         <div className="relative h-48 bg-gray-100">
           {startup.images && startup.images.length > 0 ? (
             <Image
@@ -76,17 +76,17 @@ export default function StartupCard({ startup }: StartupCardProps) {
           )}
         </div>
         
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-grow">
           <div className="flex items-start justify-between">
             <h3 className="text-lg font-semibold text-indigo-950 truncate">
               {startup.name}
             </h3>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
               {formatDistanceToNow(new Date(startup.createdAt), { addSuffix: true, locale: ru })}
             </span>
           </div>
           
-          <p className="mt-2 text-sm text-gray-600 line-clamp-3">
+          <p className="mt-2 text-sm text-gray-600 line-clamp-3 flex-grow">
             {truncatedDescription}
           </p>
           

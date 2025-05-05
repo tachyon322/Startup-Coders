@@ -25,20 +25,25 @@ const FindPage = async ({ searchParams }: FindPageProps) => {
 
   // Parse page from query params
   const page = parseInt((params.page as string) || "1", 10);
-  
+
   // Get search query if any
   const searchQuery = params.q || undefined;
-  
+
   // Parse tag IDs if any
-  const tagIds = params.tags 
-    ? (params.tags as string).split(",").map(id => parseInt(id, 10)) 
+  const tagIds = params.tags
+    ? (params.tags as string).split(",").map((id) => parseInt(id, 10))
     : undefined;
 
   // Fetch all available tags for the filter component
   const tags = await getTags();
 
   // Fetch startups with pagination, search and filters
-  const { startups, pagination } = await getStartups(page, PAGE_SIZE, searchQuery, tagIds);
+  const { startups, pagination } = await getStartups(
+    page,
+    PAGE_SIZE,
+    searchQuery,
+    tagIds
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,22 +85,20 @@ const FindPage = async ({ searchParams }: FindPageProps) => {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-6 md:p-8">
-          {/* Search component */}
-          <div className="mb-6">
-            <Suspense fallback={<div>Загрузка фильтров...</div>}>
-              <StartupSearch availableTags={tags} />
-            </Suspense>
-          </div>
-
-          <Suspense fallback={<div>Загрузка стартапов...</div>}>
-            <StartupGrid
-              startups={startups}
-              pagination={pagination}
-              baseUrl="/find"
-            />
+        {/* Search component */}
+        <div className="mb-6">
+          <Suspense fallback={<div>Загрузка фильтров...</div>}>
+            <StartupSearch availableTags={tags} />
           </Suspense>
         </div>
+
+        <Suspense fallback={<div>Загрузка стартапов...</div>}>
+          <StartupGrid
+            startups={startups}
+            pagination={pagination}
+            baseUrl="/find"
+          />
+        </Suspense>
       </main>
     </div>
   );

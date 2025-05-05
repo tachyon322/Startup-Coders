@@ -41,11 +41,11 @@ export default function ImageLightbox({
 
   return (
     <>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
         {displayImages.map((image, idx) => (
           <div
             key={image.id}
-            className="relative aspect-square rounded-xs overflow-hidden cursor-pointer"
+            className="relative aspect-[16/9] rounded-xs overflow-hidden cursor-pointer"
             onClick={() => {
               setIndex(idx);
               setOpen(true);

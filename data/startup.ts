@@ -201,4 +201,63 @@ export async function getStartupById(startupId: string) {
   }
 
   return startup
+}
+
+export async function requestToParticipate(startupId: string, message: string) {
+  const session = await getSession()
+  
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized")
+  }
+
+  // Check if user is already a participant
+  const startup = await db.startup.findUnique({
+    where: { id: startupId },
+    include: {
+      participants: true,
+      StartupRequest: {
+        include: {
+          requestBy: true
+        }
+      }
+    }
+  })
+
+  if (!startup) {
+    throw new Error("Startup not found")
+  }
+
+  // Check if user is already a participant
+  if (startup.participants.some(p => p.id === session.user.id)) {
+    throw new Error("You are already a participant")
+  }
+
+  // Check if user already has a pending request
+  if (startup.StartupRequest?.requestBy.some(u => u.id === session.user.id)) {
+    throw new Error("You already have a pending request")
+  }
+
+  // Create or connect to existing request
+  const request = await db.startupRequest.upsert({
+    where: {
+      id: startup.startupRequestId || 0
+    },
+    create: {
+      message,
+      requestBy: {
+        connect: { id: session.user.id }
+      },
+      startup: {
+        connect: { id: startupId }
+      }
+    },
+    update: {
+      message,
+      requestBy: {
+        connect: { id: session.user.id }
+      }
+    }
+  })
+
+  return request
 } 
