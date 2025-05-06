@@ -77,7 +77,7 @@ const StartupPage = async ({ params }: { params: Promise<{ startup: string }> })
               <div className="p-6">
                 {!session ? (
                   <Link 
-                    href="/auth/signin"
+                    href={`/login?returnTo=/startup/${startupId}`}
                     className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors inline-block text-center"
                   >
                     Войти для участия
