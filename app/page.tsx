@@ -13,6 +13,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen flex flex-col">
+      {JSON.stringify(session)}
       <Header session={session} />
       <HeroSection />
       <HowItWorks />

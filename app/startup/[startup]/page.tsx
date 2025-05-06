@@ -3,19 +3,20 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import Header from "@/components/landing/Header";
-import { getStartupById } from "@/data/startup";
+import { getStartupById, hasRequestedAccess } from "@/data/startup";
 import { getSession } from "@/lib/getSession";
 import Image from "next/image";
 import Link from "next/link";
 import { Users, Calendar } from "lucide-react";
 import ImageLightbox from "@/components/ImageLightbox";
-import RequestForm from "@/components/startup/RequestForm";
+import RequestFormWrapper from "@/components/startup/RequestFormWrapper";
 
 const StartupPage = async ({ params }: { params: Promise<{ startup: string }> }) => {
   const session = await getSession();
   const startupId = (await params).startup;
   
   const startup = await getStartupById(startupId);
+  const hasRequested = session?.user?.id ? await hasRequestedAccess(startupId) : false;
 
   // If startup doesn't exist, show 404
   if (!startup) {
@@ -95,17 +96,15 @@ const StartupPage = async ({ params }: { params: Promise<{ startup: string }> })
                   >
                     Вы уже участник
                   </button>
+                ) : hasRequested ? (
+                  <button 
+                    disabled
+                    className="w-full bg-gray-300 text-gray-500 font-medium py-3 px-4 rounded-lg cursor-not-allowed"
+                  >
+                    Заявка отправлена
+                  </button>
                 ) : (
-                  <RequestForm 
-                    startupId={startupId}
-                    onSuccess={() => {
-                      // Refresh the page to show updated state
-                      window.location.reload();
-                    }}
-                    onError={(error) => {
-                      alert(error);
-                    }}
-                  />
+                  <RequestFormWrapper startupId={startupId} />
                 )}
                 
                 <div className="mt-4 pt-4 border-t border-gray-100">
