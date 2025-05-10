@@ -1,18 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, memo } from "react"
 import { Tag } from "@/components/ui/tag-input"
 import { EditTagsDialog } from "@/components/user/EditTagsDialog"
 
 interface UserTagsSectionProps {
   tags: Tag[]
   username: string | null | undefined
+  userId?: string
   isCurrentUser: boolean
 }
 
-export function UserTagsSection({ 
+function UserTagsSectionBase({ 
   tags, 
   username, 
+  userId,
   isCurrentUser 
 }: UserTagsSectionProps) {
   const [currentTags, setCurrentTags] = useState<Tag[]>(tags || [])
@@ -36,13 +38,16 @@ export function UserTagsSection({
         <span className="text-gray-500 text-sm">Нет тегов технологий</span>
       )}
       
-      {isCurrentUser && username && (
+      {isCurrentUser && (username || userId) && (
         <EditTagsDialog
           initialTags={currentTags}
-          username={username}
+          username={username || ""}
+          userId={userId}
           onTagsUpdated={handleTagsUpdate}
         />
       )}
     </div>
   )
-} 
+}
+
+export const UserTagsSection = memo(UserTagsSectionBase); 

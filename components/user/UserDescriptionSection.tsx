@@ -1,17 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, memo } from "react"
 import { EditDescriptionDialog } from "./EditDescriptionDialog"
 
 interface UserDescriptionSectionProps {
   description: string | null | undefined
   username: string | null | undefined
+  userId?: string
   isCurrentUser: boolean
 }
 
-export function UserDescriptionSection({ 
+function UserDescriptionSectionBase({ 
   description, 
   username, 
+  userId,
   isCurrentUser 
 }: UserDescriptionSectionProps) {
   const [currentDescription, setCurrentDescription] = useState(description)
@@ -26,14 +28,17 @@ export function UserDescriptionSection({
         <p className="text-gray-700">
           {currentDescription || "Нет описания"}
         </p>
-        {isCurrentUser && username && (
+        {isCurrentUser && (username || userId) && (
           <EditDescriptionDialog 
             initialDescription={currentDescription} 
-            username={username}
+            username={username || ""}
+            userId={userId}
             onDescriptionUpdated={handleDescriptionUpdate}
           />
         )}
       </div>
     </div>
   )
-} 
+}
+
+export const UserDescriptionSection = memo(UserDescriptionSectionBase); 

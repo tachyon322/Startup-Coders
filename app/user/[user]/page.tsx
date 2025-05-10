@@ -1,17 +1,56 @@
 "use server";
 
-import { getUser } from "@/data/user";
+import { getUser, getMostActiveUsers } from "@/data/user";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/landing/Header";
-import { getSession } from "@/lib/getSession";
+import { getSession } from "@/lib/auth/getSession";
 import { UserDescriptionSection } from "@/components/user/UserDescriptionSection";
 import { UserTagsSection } from "@/components/user/UserTagsSection";
-import UserProfileNav from "@/components/user/UserProfileNav";
+import { UserUsernameSection } from "@/components/user/UserUsernameSection";
+import { UserNameSection } from "@/components/user/UserNameSection";
+import { UserImageSection } from "@/components/user/UserImageSection";
 import UserStartupTabs from "@/components/user/UserStartupTabs";
+import { Metadata } from "next";
+import { Suspense } from "react";
 
 interface UserPageProps {
   params: Promise<{ user: string }>;
+}
+
+// Generate static params for most active users
+export async function generateStaticParams() {
+  // This function should return a list of usernames for the most active users
+  // that we want to pre-render at build time
+  const activeUsers = await getMostActiveUsers(20); // Get top 20 most active users
+  
+  // Filter out users with null usernames and map to the required format
+  return activeUsers
+    .filter((user) => user.username !== null)
+    .map((user) => ({
+      user: user.username as string,
+    }));
+}
+
+// Generate metadata for the page
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ user: string }> 
+}): Promise<Metadata> {
+  const userName = (await params).user;
+  const user = await getUser(userName);
+  
+  if (!user) {
+    return {
+      title: 'Пользователь не найден',
+    };
+  }
+  
+  return {
+    title: `${user.name || user.username || "User"} | Профиль`,
+    description: user.description || `View ${user.name || user.username}'s profile`,
+  };
 }
 
 export default async function UserPage({ params }: UserPageProps) {
@@ -23,12 +62,11 @@ export default async function UserPage({ params }: UserPageProps) {
   }
 
   const session = await getSession();
-  const isCurrentUser = session?.user?.username === user.username;
+  const isCurrentUser = session?.user?.username === user.username || session?.user?.id === user.id;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header session={session} />
-      <UserProfileNav username={userName} activePath={`/user/${userName}`} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Main profile panel */}
@@ -37,38 +75,53 @@ export default async function UserPage({ params }: UserPageProps) {
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar */}
             <div className="flex-shrink-0">
-              <div className="relative h-32 w-32 rounded-full overflow-hidden bg-indigo-100 border-4 border-white shadow-lg">
-                {user.image ? (
-                  <Image
-                    src={user.image}
-                    alt={user.name || "User"}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-4xl font-bold text-indigo-500">
-                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                  </div>
-                )}
-              </div>
+              <Suspense fallback={<div className="h-32 w-32 rounded-full bg-gray-100 animate-pulse"></div>}>
+                <UserImageSection
+                  image={user.image}
+                  name={user.name}
+                  username={user.username}
+                  userId={user.id}
+                  isCurrentUser={isCurrentUser}
+                />
+              </Suspense>
             </div>
             
             {/* User details */}
             <div className="flex-grow">
-              <h1 className="text-3xl font-bold text-indigo-950">{user.name || "User"}</h1>
-              <p className="text-gray-500">@{user.username}</p>
+              <Suspense fallback={<div className="h-10 w-full bg-gray-100 animate-pulse rounded mb-2"></div>}>
+                <UserNameSection
+                  name={user.name}
+                  username={user.username}
+                  userId={user.id}
+                  isCurrentUser={isCurrentUser}
+                />
+              </Suspense>
               
-              <UserDescriptionSection 
-                description={user.description} 
-                username={user.username} 
-                isCurrentUser={isCurrentUser}
-              />
+              <Suspense fallback={<div className="h-6 w-full bg-gray-100 animate-pulse rounded my-1"></div>}>
+                <UserUsernameSection
+                  username={user.username}
+                  userId={user.id}
+                  isCurrentUser={isCurrentUser}
+                />
+              </Suspense>
               
-              <UserTagsSection
-                tags={user.tags || []}
-                username={user.username}
-                isCurrentUser={isCurrentUser}
-              />
+              <Suspense fallback={<div className="h-16 w-full bg-gray-100 animate-pulse rounded my-4"></div>}>
+                <UserDescriptionSection 
+                  description={user.description} 
+                  username={user.username}
+                  userId={user.id}
+                  isCurrentUser={isCurrentUser}
+                />
+              </Suspense>
+              
+              <Suspense fallback={<div className="h-10 w-full bg-gray-100 animate-pulse rounded my-4"></div>}>
+                <UserTagsSection
+                  tags={user.tags || []}
+                  username={user.username}
+                  userId={user.id}
+                  isCurrentUser={isCurrentUser}
+                />
+              </Suspense>
             </div>
           </div>
           
@@ -101,12 +154,15 @@ export default async function UserPage({ params }: UserPageProps) {
           </div>
           
           {/* Startups tabs section */}
-          <UserStartupTabs 
-            username={user.username || ''} 
-            createdStartups={user.createdStartups || []}
-            participatingStartups={user.participatingStartups || []}
-            isCurrentUser={isCurrentUser}
-          />
+          <Suspense fallback={<div className="h-96 w-full bg-gray-100 animate-pulse rounded mt-8"></div>}>
+            <UserStartupTabs 
+              username={user.username || ''} 
+              userId={user.id}
+              createdStartups={user.createdStartups || []}
+              participatingStartups={user.participatingStartups || []}
+              isCurrentUser={isCurrentUser}
+            />
+          </Suspense>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Header from "@/components/landing/Header";
-import { getSession } from "@/lib/getSession";
+import { getSession } from "@/lib/auth/getSession";
 
 export default async function NotFound() {
   const session = await getSession();

@@ -2,13 +2,14 @@
 
 import { auth } from './auth';
 import { headers } from 'next/headers';
-import type { Session } from '../types/base';
+import { cache } from 'react';
+import type { Session } from '../../types/base';
 
 /**
  * Utility function to get the user session
  * @returns The user session or null if not authenticated
  */
-export async function getSession(): Promise<Session | null> {
+export const getSession = cache(async function getSession(): Promise<Session | null> {
   try {
     const authSession = await auth.api.getSession({
       headers: await headers(),
@@ -41,4 +42,4 @@ export async function getSession(): Promise<Session | null> {
     console.error('Error retrieving session:', error);
     return null;
   }
-} 
+}); 

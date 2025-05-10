@@ -2,8 +2,9 @@
 
 import React from "react";
 import { Suspense } from "react";
+import { cache } from "react";
 import Header from "@/components/landing/Header";
-import { getSession } from "@/lib/getSession";
+import { getSession } from "@/lib/auth/getSession";
 import { getStartups, getTags } from "@/data/startup";
 import StartupGrid from "@/components/startup/StartupGrid";
 import StartupSearch from "@/components/startup/StartupSearch";
@@ -18,6 +19,21 @@ interface FindPageProps {
 }
 
 const PAGE_SIZE = 9;
+
+// Cached version of getTags to avoid redundant database calls
+const getCachedTags = cache(async () => {
+  return getTags();
+});
+
+// Cached version of getStartups with dependency on all search parameters
+const getCachedStartups = cache(async (
+  page: number,
+  pageSize: number,
+  searchQuery?: string,
+  tagIds?: number[]
+) => {
+  return getStartups(page, pageSize, searchQuery, tagIds);
+});
 
 const FindPage = async ({ searchParams }: FindPageProps) => {
   const session = await getSession();
@@ -34,11 +50,11 @@ const FindPage = async ({ searchParams }: FindPageProps) => {
     ? (params.tags as string).split(",").map((id) => parseInt(id, 10))
     : undefined;
 
-  // Fetch all available tags for the filter component
-  const tags = await getTags();
+  // Fetch all available tags for the filter component (cached)
+  const tags = await getCachedTags();
 
-  // Fetch startups with pagination, search and filters
-  const { startups, pagination } = await getStartups(
+  // Fetch startups with pagination, search and filters (cached)
+  const { startups, pagination } = await getCachedStartups(
     page,
     PAGE_SIZE,
     searchQuery,
@@ -85,14 +101,18 @@ const FindPage = async ({ searchParams }: FindPageProps) => {
           </div>
         </div>
 
-        {/* Search component */}
+        {/* Optimize with streaming and suspense boundaries */}
         <div className="mb-6">
-          <Suspense fallback={<div>Загрузка фильтров...</div>}>
+          <Suspense fallback={<div className="h-12 bg-gray-100 animate-pulse rounded-md">Загрузка фильтров...</div>}>
             <StartupSearch availableTags={tags} />
           </Suspense>
         </div>
 
-        <Suspense fallback={<div>Загрузка стартапов...</div>}>
+        <Suspense fallback={<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {[...Array(PAGE_SIZE)].map((_, i) => (
+            <div key={i} className="h-64 bg-gray-100 animate-pulse rounded-md"></div>
+          ))}
+        </div>}>
           <StartupGrid
             startups={startups}
             pagination={pagination}

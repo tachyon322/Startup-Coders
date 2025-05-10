@@ -13,7 +13,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { Session } from "@/types/base"
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth/auth-client"
 
 interface UserDropdownProps {
   session: Session
@@ -25,14 +25,14 @@ export default function UserDropdown({ session }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <div className="cursor-pointer">
+        <div className="cursor-pointer overflow-hidden rounded-full">
           {session.user.image ? (
             <Image 
               src={session.user.image} 
               alt={session.user.name || ""} 
               width={32} 
               height={32} 
-              className="rounded-full" 
+              className="rounded-full object-cover" 
             />
           ) : (
             <div className="w-8 h-8 bg-indigo-400 rounded-full flex items-center justify-center text-sm font-semibold text-white">
@@ -51,7 +51,7 @@ export default function UserDropdown({ session }: UserDropdownProps) {
         
         <DropdownMenuSeparator className="h-px bg-gray-100" />
         
-        <Link href={`/user/${session.user.username}`}>
+        <Link href={session.user.username ? `/user/${session.user.username}` : `/user/${session.user.id}`}>
           <DropdownMenuItem className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-50 flex items-center gap-2 text-black">
             <User size={16} />
             <span>Профиль</span>

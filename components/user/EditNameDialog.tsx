@@ -8,39 +8,49 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogFooter 
+  DialogFooter
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { updateUserDescription } from "@/data/user"
+import { Input } from "@/components/ui/input"
+import { updateUserName } from "@/data/user"
 
-interface EditDescriptionDialogProps {
-  initialDescription: string | null | undefined
+interface EditNameDialogProps {
+  initialName: string | null | undefined
   username: string
   userId?: string
-  onDescriptionUpdated: (newDescription: string) => void
+  onNameUpdated: (newName: string) => void
 }
 
-export function EditDescriptionDialog({ 
-  initialDescription, 
+export function EditNameDialog({ 
+  initialName, 
   username,
   userId,
-  onDescriptionUpdated 
-}: EditDescriptionDialogProps) {
-  const [description, setDescription] = useState(initialDescription || "")
+  onNameUpdated 
+}: EditNameDialogProps) {
+  const [name, setName] = useState(initialName || "")
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async () => {
     try {
+      if (!name.trim()) {
+        setError("Name cannot be empty")
+        return
+      }
+      
+      setError("")
       setIsSubmitting(true)
+      
       // Use userId if available, otherwise use username
       const identifier = userId || username
-      await updateUserDescription(identifier, description)
-      onDescriptionUpdated(description)
+      await updateUserName(identifier, name)
+      
+      onNameUpdated(name)
       setIsOpen(false)
     } catch (error) {
-      console.error("Error updating description:", error)
+      console.error("Error updating name:", error)
+      setError("An error occurred. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -53,22 +63,24 @@ export function EditDescriptionDialog({
           variant="ghost" 
           size="icon" 
           className="ml-2 h-6 w-6 rounded-full hover:bg-gray-100"
-          aria-label="Редактировать описание"
+          aria-label="Редактировать имя"
         >
           <Pencil className="h-4 w-4 text-gray-500" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Редактировать описание</DialogTitle>
+          <DialogTitle>Изменить имя</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <Textarea
-            placeholder="Add a description about yourself..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[100px]"
+          <Input
+            placeholder="Введите ваше имя"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
+          {error && (
+            <p className="text-sm text-red-500 mt-2">{error}</p>
+          )}
         </div>
         <DialogFooter>
           <Button

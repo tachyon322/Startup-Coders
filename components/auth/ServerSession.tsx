@@ -1,7 +1,7 @@
 "use server";
 
 import { ReactNode } from "react";
-import { getSession } from "@/lib/getSession";
+import { getSession } from "@/lib/auth/getSession";
 import { SessionProvider } from "./SessionProvider";
 
 interface ServerSessionProviderProps {

@@ -4,7 +4,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import Header from "@/components/landing/Header";
 import { getStartupById, hasRequestedAccess } from "@/data/startup";
-import { getSession } from "@/lib/getSession";
+import { getSession } from "@/lib/auth/getSession";
 import Image from "next/image";
 import Link from "next/link";
 import { Users, Calendar } from "lucide-react";

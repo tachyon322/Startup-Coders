@@ -18,12 +18,14 @@ import { updateUserTags, getAllTags } from "@/data/user"
 interface EditTagsDialogProps {
   initialTags: Tag[]
   username: string
+  userId?: string
   onTagsUpdated: (newTags: Tag[]) => void
 }
 
 export function EditTagsDialog({ 
   initialTags, 
   username,
+  userId,
   onTagsUpdated 
 }: EditTagsDialogProps) {
   const [tags, setTags] = useState<Tag[]>(initialTags || [])
@@ -54,7 +56,9 @@ export function EditTagsDialog({
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true)
-      await updateUserTags(username, tags)
+      // Use userId if available, otherwise use username
+      const identifier = userId || username
+      await updateUserTags(identifier, tags)
       onTagsUpdated(tags)
       setIsOpen(false)
     } catch (error) {

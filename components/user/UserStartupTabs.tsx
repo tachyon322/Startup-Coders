@@ -1,18 +1,20 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import UserStartupList from './UserStartupList'
 
 interface UserStartupTabsProps {
   username: string
+  userId?: string
   createdStartups: any[]
   participatingStartups: any[]
   isCurrentUser: boolean
 }
 
-export default function UserStartupTabs({ 
+function UserStartupTabs({ 
   username, 
+  userId,
   createdStartups, 
   participatingStartups,
   isCurrentUser 
@@ -58,3 +60,5 @@ export default function UserStartupTabs({
     </div>
   )
 } 
+
+export default memo(UserStartupTabs); 

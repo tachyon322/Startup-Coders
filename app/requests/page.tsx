@@ -1,6 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getSession } from '@/lib/getSession';
+import { getSession } from '@/lib/auth/getSession';
 import Header from '@/components/landing/Header';
 import { getUserRequests } from '@/data/startup';
 import Link from 'next/link';

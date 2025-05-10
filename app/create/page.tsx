@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Header from '@/components/landing/Header'
-import { getSession } from '@/lib/getSession'
+import { getSession } from '@/lib/auth/getSession'
 import { redirect } from 'next/navigation'
 import StartupForm from '@/components/StartupForm'
 import { getTags } from '@/data/startup'

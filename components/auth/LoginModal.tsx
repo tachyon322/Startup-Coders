@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '../landing/Typography';
 import { useModalAnimation } from '../animations/useGSAPAnimations';
 import { gsap } from 'gsap';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth/auth-client';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -86,12 +86,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
   }, [isOpen]);
 
-  const handleMagicLinkSubmit = (e: React.FormEvent) => {
+  const handleMagicLinkSubmit = async(e: React.FormEvent, email: string) => {
     e.preventDefault();
     setIsLoading(true);
+    const { data, error } = await authClient.signIn.magicLink({
+      email: email,
+      callbackURL: "/complete", //redirect after successful login (optional)
+    });
     // This would have actual implementation in a real app
     setTimeout(() => {
       setIsLoading(false);
+
       
       if (modalRef.current) {
         const form = modalRef.current.querySelector('form');
@@ -187,7 +192,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
 
-            <form onSubmit={handleMagicLinkSubmit}>
+            <form onSubmit={(e) => handleMagicLinkSubmit(e, email)}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input

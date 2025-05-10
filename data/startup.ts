@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/prisma/db"
-import { getSession } from "@/lib/getSession"
+import { getSession } from "@/lib/auth/getSession"
 import { Tag } from "@/components/ui/tag-input"
 
 export async function getTags() {
