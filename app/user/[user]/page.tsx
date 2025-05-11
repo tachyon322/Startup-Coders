@@ -2,7 +2,6 @@
 
 import { getUser, getMostActiveUsers } from "@/data/user";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Header from "@/components/landing/Header";
 import { getSession } from "@/lib/auth/getSession";
 import { UserDescriptionSection } from "@/components/user/UserDescriptionSection";
@@ -53,6 +52,29 @@ export async function generateMetadata({
   };
 }
 
+// Preloaded profile skeleton to reduce layout shift
+const ProfileSkeleton = () => (
+  <>
+    <div className="flex-shrink-0">
+      <div className="h-32 w-32 rounded-full bg-gray-100 animate-pulse"></div>
+    </div>
+    <div className="flex-grow">
+      <div className="h-10 w-full bg-gray-100 animate-pulse rounded mb-2"></div>
+      <div className="h-6 w-full bg-gray-100 animate-pulse rounded my-1"></div>
+      <div className="h-16 w-full bg-gray-100 animate-pulse rounded my-4"></div>
+      <div className="h-10 w-full bg-gray-100 animate-pulse rounded my-4"></div>
+    </div>
+  </>
+);
+
+// Reusable stat box component to reduce duplication
+const StatBox = ({ value, label }: { value: number | string; label: string }) => (
+  <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg text-center">
+    <div className="text-3xl font-bold text-indigo-800">{value}</div>
+    <div className="text-indigo-600">{label}</div>
+  </div>
+);
+
 export default async function UserPage({ params }: UserPageProps) {
   const userName = (await params).user;
   const user = await getUser(userName);
@@ -64,6 +86,12 @@ export default async function UserPage({ params }: UserPageProps) {
   const session = await getSession();
   const isCurrentUser = session?.user?.username === user.username || session?.user?.id === user.id;
 
+  // Precompute values to avoid unnecessary calculations in JSX
+  const createdStartupsCount = user.createdStartups?.length || 0;
+  const participatingStartupsCount = user.participatingStartups?.length || 0;
+  const tagsCount = user.tags?.length || 0;
+  const joinYear = new Date(user.createdAt).getFullYear();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header session={session} />
@@ -73,9 +101,9 @@ export default async function UserPage({ params }: UserPageProps) {
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           {/* User info section */}
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Avatar */}
-            <div className="flex-shrink-0">
-              <Suspense fallback={<div className="h-32 w-32 rounded-full bg-gray-100 animate-pulse"></div>}>
+            <Suspense fallback={<ProfileSkeleton />}>
+              {/* Avatar */}
+              <div className="flex-shrink-0">
                 <UserImageSection
                   image={user.image}
                   name={user.name}
@@ -83,74 +111,46 @@ export default async function UserPage({ params }: UserPageProps) {
                   userId={user.id}
                   isCurrentUser={isCurrentUser}
                 />
-              </Suspense>
-            </div>
-            
-            {/* User details */}
-            <div className="flex-grow">
-              <Suspense fallback={<div className="h-10 w-full bg-gray-100 animate-pulse rounded mb-2"></div>}>
+              </div>
+              
+              {/* User details */}
+              <div className="flex-grow">
                 <UserNameSection
                   name={user.name}
                   username={user.username}
                   userId={user.id}
                   isCurrentUser={isCurrentUser}
                 />
-              </Suspense>
-              
-              <Suspense fallback={<div className="h-6 w-full bg-gray-100 animate-pulse rounded my-1"></div>}>
+                
                 <UserUsernameSection
                   username={user.username}
                   userId={user.id}
                   isCurrentUser={isCurrentUser}
                 />
-              </Suspense>
-              
-              <Suspense fallback={<div className="h-16 w-full bg-gray-100 animate-pulse rounded my-4"></div>}>
+                
                 <UserDescriptionSection 
                   description={user.description} 
                   username={user.username}
                   userId={user.id}
                   isCurrentUser={isCurrentUser}
                 />
-              </Suspense>
-              
-              <Suspense fallback={<div className="h-10 w-full bg-gray-100 animate-pulse rounded my-4"></div>}>
+                
                 <UserTagsSection
                   tags={user.tags || []}
                   username={user.username}
                   userId={user.id}
                   isCurrentUser={isCurrentUser}
                 />
-              </Suspense>
-            </div>
+              </div>
+            </Suspense>
           </div>
           
           {/* User stats section */}
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-indigo-50 p-4 rounded-lg text-center">
-              <div className="text-3xl font-bold text-indigo-800">
-                {user.createdStartups?.length || 0}
-              </div>
-              <div className="text-indigo-600">Стартапов создано</div>
-            </div>
-            <div className="bg-indigo-50 p-4 rounded-lg text-center">
-              <div className="text-3xl font-bold text-indigo-800">
-                {user.participatingStartups?.length || 0}
-              </div>
-              <div className="text-indigo-600">Участвует в</div>
-            </div>
-            <div className="bg-indigo-50 p-4 rounded-lg text-center">
-              <div className="text-3xl font-bold text-indigo-800">
-                {user.tags?.length || 0}
-              </div>
-              <div className="text-indigo-600">Скиллы</div>
-            </div>
-            <div className="bg-indigo-50 p-4 rounded-lg text-center">
-              <div className="text-3xl font-bold text-indigo-800">
-                {new Date(user.createdAt).getFullYear()}
-              </div>
-              <div className="text-indigo-600">Присоединился</div>
-            </div>
+            <StatBox value={createdStartupsCount} label="Стартапов создано" />
+            <StatBox value={participatingStartupsCount} label="Участвует в" />
+            <StatBox value={tagsCount} label="Скиллы" />
+            <StatBox value={joinYear} label="Присоединился" />
           </div>
           
           {/* Startups tabs section */}

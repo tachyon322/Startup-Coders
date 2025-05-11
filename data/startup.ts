@@ -3,13 +3,21 @@
 import { db } from "@/prisma/db"
 import { getSession } from "@/lib/auth/getSession"
 import { Tag } from "@/components/ui/tag-input"
+import { cache } from "react"
 
-export async function getTags() {
-  const tags = await db.tag.findMany()
+// Cache tags to improve performance for components that need it
+export const getTags = cache(async function getTags() {
+  const tags = await db.tag.findMany({
+    select: {
+      id: true,
+      name: true
+    }
+  })
   return tags
-}
+})
 
-export async function getStartups(
+// Cache startup queries with specific parameter combinations
+export const getStartups = cache(async function getStartups(
   page = 1,
   pageSize = 10,
   searchQuery?: string,
@@ -49,8 +57,18 @@ export async function getStartups(
       createdAt: 'desc'
     },
     include: {
-      tags: true,
-      images: true,
+      tags: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      images: {
+        select: {
+          id: true,
+          url: true
+        }
+      },
       creatorId: {
         select: {
           id: true,
@@ -85,7 +103,7 @@ export async function getStartups(
       pageSize
     }
   }
-}
+})
 
 export async function createStartup(
   name: string,
@@ -99,55 +117,72 @@ export async function createStartup(
     throw new Error("Unauthorized")
   }
 
-  // Process tags - connect existing ones and create new ones
+  // Optimize tag handling
+  // 1. Split into existing and new tags
   const existingTags = tags.filter(tag => tag.id).map(tag => ({ id: tag.id as number }))
-  const newTagNames = tags.filter(tag => !tag.id).map(tag => tag.name)
+  const newTagNames = Array.from(new Set(tags.filter(tag => !tag.id).map(tag => tag.name)))
   
-  // First, create any new tags and get their IDs
-  let allTagIds = [...existingTags]
+  // 2. Find any existing tags by name to avoid duplicates
+  let allTagConnections = [...existingTags]
   
   if (newTagNames.length > 0) {
-    // Create a unique set of new tag names
-    const uniqueNewTagNames = Array.from(new Set(newTagNames))
+    // Check which of the new tag names already exist in the database
+    const existingTagsByName = await db.tag.findMany({
+      where: {
+        name: {
+          in: newTagNames
+        }
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
     
-    // Create tags one by one and collect their IDs
-    for (const tagName of uniqueNewTagNames) {
-      // Check if tag already exists by name
-      const existingTag = await db.tag.findFirst({
-        where: { name: tagName }
+    // Add existing tags found by name to connections
+    const existingTagNameSet = new Set(existingTagsByName.map(tag => tag.name))
+    allTagConnections.push(...existingTagsByName.map(tag => ({ id: tag.id })))
+    
+    // Create truly new tags in a single transaction
+    const trulyNewTagNames = newTagNames.filter(name => !existingTagNameSet.has(name))
+    
+    if (trulyNewTagNames.length > 0) {
+      // Get the highest tag ID for creating new sequential IDs
+      const highestIdTag = await db.tag.findFirst({
+        orderBy: { id: 'desc' }
       })
       
-      if (existingTag) {
-        // If tag exists, just connect it
-        allTagIds.push({ id: existingTag.id })
-      } else {
-        // Create a new tag - we need to find the highest existing ID
-        const highestIdTag = await db.tag.findFirst({
-          orderBy: { id: 'desc' }
+      let nextId = highestIdTag ? highestIdTag.id + 1 : 1
+      
+      // Create all new tags in a single transaction
+      const newTags = await db.$transaction(
+        trulyNewTagNames.map((name) => {
+          const tagId = nextId++
+          return db.tag.create({
+            data: {
+              id: tagId,
+              name
+            },
+            select: {
+              id: true
+            }
+          })
         })
-        
-        const newId = highestIdTag ? highestIdTag.id + 1 : 1
-        
-        const newTag = await db.tag.create({
-          data: {
-            id: newId,
-            name: tagName
-          }
-        })
-        
-        allTagIds.push({ id: newTag.id })
-      }
+      )
+      
+      // Add newly created tags to connections
+      allTagConnections.push(...newTags.map(tag => ({ id: tag.id })))
     }
   }
   
-  // Now create the startup with the connected tags
+  // Create the startup with optimized tag connections in a single operation
   const startup = await db.startup.create({
     data: {
       name,
       description,
       creatorUser: session.user.id,
       tags: {
-        connect: allTagIds
+        connect: allTagConnections
       },
       participants: {
         connect: { id: session.user.id }
@@ -168,14 +203,31 @@ export async function createStartup(
   return startup
 }
 
-export async function getStartupById(startupId: string) {
+// Optimized startup details by ID for better performance
+export const getStartupById = cache(async function getStartupById(startupId: string) {
+  // Only select the fields we actually need
   const startup = await db.startup.findUnique({
     where: {
       id: startupId
     },
-    include: {
-      tags: true,
-      images: true,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      createdAt: true,
+      creatorUser: true, // needed for permission checks
+      tags: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      images: {
+        select: {
+          id: true,
+          url: true
+        }
+      },
       creatorId: {
         select: {
           id: true,
@@ -201,7 +253,7 @@ export async function getStartupById(startupId: string) {
   }
 
   return startup
-}
+})
 
 export async function requestToParticipate(startupId: string, message: string) {
   const session = await getSession()
@@ -214,10 +266,18 @@ export async function requestToParticipate(startupId: string, message: string) {
   const startup = await db.startup.findUnique({
     where: { id: startupId },
     include: {
-      participants: true,
+      participants: {
+        select: {
+          id: true
+        }
+      },
       StartupRequest: {
         include: {
-          requestBy: true
+          requestBy: {
+            select: {
+              id: true
+            }
+          }
         }
       }
     }
@@ -262,7 +322,8 @@ export async function requestToParticipate(startupId: string, message: string) {
   return request
 }
 
-export async function hasRequestedAccess(startupId: string) {
+// Cache the request access check for better performance
+export const hasRequestedAccess = cache(async function hasRequestedAccess(startupId: string) {
   const session = await getSession()
   
   if (!session?.user?.id) {
@@ -271,10 +332,14 @@ export async function hasRequestedAccess(startupId: string) {
 
   const startup = await db.startup.findUnique({
     where: { id: startupId },
-    include: {
+    select: {
       StartupRequest: {
-        include: {
-          requestBy: true
+        select: {
+          requestBy: {
+            select: {
+              id: true
+            }
+          }
         }
       }
     }
@@ -286,9 +351,10 @@ export async function hasRequestedAccess(startupId: string) {
 
   // Check if user has a pending request
   return startup.StartupRequest?.requestBy.some(u => u.id === session.user.id) ?? false
-}
+})
 
-export async function getUserRequests() {
+// Cache user requests to improve performance
+export const getUserRequests = cache(async function getUserRequests() {
   const session = await getSession()
   
   if (!session?.user?.id) {
@@ -307,8 +373,18 @@ export async function getUserRequests() {
     include: {
       startup: {
         include: {
-          tags: true,
-          images: true,
+          tags: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          images: {
+            select: {
+              id: true,
+              url: true
+            }
+          },
           creatorId: {
             select: {
               id: true,
@@ -348,8 +424,18 @@ export async function getUserRequests() {
           }
         }
       },
-      tags: true,
-      images: true
+      tags: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      images: {
+        select: {
+          id: true,
+          url: true
+        }
+      }
     }
   })
 
@@ -370,7 +456,7 @@ export async function getUserRequests() {
     outgoing: requests,
     incoming: incomingRequests
   }
-}
+})
 
 export async function acceptRequest(requestId: string) {
   const session = await getSession()

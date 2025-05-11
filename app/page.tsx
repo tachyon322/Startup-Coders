@@ -5,7 +5,6 @@ import HeroSection from '../components/landing/HeroSection';
 import HowItWorks from '../components/landing/HowItWorks';
 import Features from '../components/landing/Features';
 import CTA from '../components/landing/CTA';
-import Footer from '../components/landing/Footer';
 import { getSession } from '@/lib/auth/getSession';
 
 export default async function Home() {

@@ -39,7 +39,7 @@ export default function UserStartupSection({
         </div>
         
         {showCreateButton && (
-          <Link href="/startup/create">
+          <Link href="/create">
             <Button className="flex items-center gap-2">
               <PlusCircle className="w-4 h-4" />
               Create Startup
@@ -58,7 +58,7 @@ export default function UserStartupSection({
           </p>
           
           {showCreateButton && (
-            <Link href="/startup/create" className="mt-4 inline-block">
+            <Link href="/create" className="mt-4 inline-block">
               <Button className="flex items-center gap-2">
                 <PlusCircle className="w-4 h-4" />
                 Create Your First Startup

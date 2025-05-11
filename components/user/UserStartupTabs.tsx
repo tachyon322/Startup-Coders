@@ -42,7 +42,7 @@ function UserStartupTabs({
                 : `${username} еще не создал ни одного стартапа`
             }
             emptyActionLabel={isCurrentUser ? "Создать стартап" : undefined}
-            emptyActionHref={isCurrentUser ? "/startup/create" : undefined}
+            emptyActionHref={isCurrentUser ? "/create" : undefined}
           />
         </TabsContent>
         

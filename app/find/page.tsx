@@ -8,6 +8,7 @@ import { getSession } from "@/lib/auth/getSession";
 import { getStartups, getTags } from "@/data/startup";
 import StartupGrid from "@/components/startup/StartupGrid";
 import StartupSearch from "@/components/startup/StartupSearch";
+import { Metadata } from "next";
 
 interface FindPageProps {
   searchParams: Promise<{
@@ -27,38 +28,52 @@ const getCachedTags = cache(async () => {
 
 // Cached version of getStartups with dependency on all search parameters
 const getCachedStartups = cache(async (
-  page: number,
-  pageSize: number,
-  searchQuery?: string,
-  tagIds?: number[]
+  pageStr: string,
+  queryStr: string | undefined,
+  tagsStr: string | undefined
 ) => {
-  return getStartups(page, pageSize, searchQuery, tagIds);
-});
-
-const FindPage = async ({ searchParams }: FindPageProps) => {
-  const session = await getSession();
-  const params = await searchParams;
-
   // Parse page from query params
-  const page = parseInt((params.page as string) || "1", 10);
-
-  // Get search query if any
-  const searchQuery = params.q || undefined;
-
+  const page = parseInt(pageStr || "1", 10);
+  
   // Parse tag IDs if any
-  const tagIds = params.tags
-    ? (params.tags as string).split(",").map((id) => parseInt(id, 10))
+  const tagIds = tagsStr
+    ? tagsStr.split(",").map((id) => parseInt(id, 10))
     : undefined;
-
-  // Fetch all available tags for the filter component (cached)
-  const tags = await getCachedTags();
-
-  // Fetch startups with pagination, search and filters (cached)
-  const { startups, pagination } = await getCachedStartups(
+    
+  return getStartups(
     page,
     PAGE_SIZE,
-    searchQuery,
+    queryStr,
     tagIds
+  );
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Найти стартап - Startup Coders",
+    description: "Присоединяйтесь к интересным проектам или найдите членов команды для своей идеи",
+  };
+}
+
+const FindPage = async ({ searchParams }: FindPageProps) => {
+  const [session, tags] = await Promise.all([
+    getSession(),
+    getCachedTags(),
+  ]);
+  
+  const params = await searchParams;
+
+  // Get page, search query and tags from query params
+  const pageStr = params.page || "1";
+  const searchQuery = params.q;
+  const tagsStr = params.tags as string | undefined;
+
+  // Fetch startups with pagination, search and filters (cached)
+  // Using stable string parameters for better cache effectiveness
+  const { startups, pagination } = await getCachedStartups(
+    pageStr,
+    searchQuery,
+    tagsStr
   );
 
   return (
@@ -108,11 +123,13 @@ const FindPage = async ({ searchParams }: FindPageProps) => {
           </Suspense>
         </div>
 
-        <Suspense fallback={<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(PAGE_SIZE)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-100 animate-pulse rounded-md"></div>
-          ))}
-        </div>}>
+        <Suspense fallback={
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+              <div key={i} className="h-64 bg-gray-100 animate-pulse rounded-md"></div>
+            ))}
+          </div>
+        }>
           <StartupGrid
             startups={startups}
             pagination={pagination}

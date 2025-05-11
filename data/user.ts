@@ -4,13 +4,11 @@ import { db } from "@/prisma/db"
 import { Tag } from "@/components/ui/tag-input"
 import { cache } from "react"
 
-export const getUser = cache(async function getUser(identifier: string) {
-    // Check if the identifier is a username or ID
-    let userId: string;
-    let userInfo;
-    
+// Optimized function to find user by identifier (username or id)
+// This is extracted to avoid code duplication and improve performance
+const findUserByIdentifier = cache(async (identifier: string) => {
     // Try to find the user by username first
-    userInfo = await db.user.findUnique({
+    let userInfo = await db.user.findUnique({
         where: { username: identifier },
         select: { id: true }
     });
@@ -27,32 +25,61 @@ export const getUser = cache(async function getUser(identifier: string) {
         }
     }
     
-    userId = userInfo.id;
+    return userInfo;
+});
+
+// Base user selection model to be consistent and avoid overfetching
+const baseUserSelect = {
+    id: true,
+    name: true,
+    username: true,
+    image: true
+};
+
+// Base tag selection model
+const baseTagSelect = {
+    id: true,
+    name: true
+};
+
+// Base image selection model
+const baseImageSelect = {
+    id: true,
+    url: true
+};
+
+// Optimized user query with proper data selection
+export const getUser = cache(async function getUser(identifier: string) {
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Now use the ID to get the complete user profile
+    if (!userInfo) {
+        return null;
+    }
+    
+    const userId = userInfo.id;
+    
+    // Now use the ID to get the complete user profile with optimized includes
     const user = await db.user.findUnique({
         where: { id: userId },
         include: {
-            tags: true,
+            tags: {
+                select: baseTagSelect
+            },
             createdStartups: {
                 include: {
-                    tags: true,
-                    images: true,
+                    tags: {
+                        select: baseTagSelect
+                    },
+                    images: {
+                        select: baseImageSelect,
+                        take: 1 // Optimize by only taking first image when needed
+                    },
                     participants: {
-                        select: {
-                            id: true,
-                            name: true,
-                            username: true,
-                            image: true
-                        }
+                        select: baseUserSelect,
+                        take: 5 // Limit participants to 5 for performance
                     },
                     creatorId: {
-                        select: {
-                            id: true,
-                            name: true,
-                            username: true,
-                            image: true
-                        }
+                        select: baseUserSelect
                     }
                 }
             },
@@ -63,23 +90,19 @@ export const getUser = cache(async function getUser(identifier: string) {
                     }
                 },
                 include: {
-                    tags: true,
-                    images: true,
+                    tags: {
+                        select: baseTagSelect
+                    },
+                    images: {
+                        select: baseImageSelect,
+                        take: 1 // Optimize by only taking first image when needed
+                    },
                     participants: {
-                        select: {
-                            id: true,
-                            name: true,
-                            username: true,
-                            image: true
-                        }
+                        select: baseUserSelect,
+                        take: 5 // Limit participants to 5 for performance
                     },
                     creatorId: {
-                        select: {
-                            id: true,
-                            name: true,
-                            username: true,
-                            image: true
-                        }
+                        select: baseUserSelect
                     }
                 }
             }
@@ -89,35 +112,26 @@ export const getUser = cache(async function getUser(identifier: string) {
     return user
 })
 
-export async function getAllTags() {
+export const getAllTags = cache(async function getAllTags() {
     const tags = await db.tag.findMany({
+        select: baseTagSelect,
         orderBy: {
             name: 'asc'
         }
     })
     
     return tags
-}
+})
 
 export async function updateUserDescription(identifier: string, description: string) {
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        where = { username: identifier };
-    } else {
-        // Assume it's an ID
-        where = { id: identifier };
+    if (!userInfo) {
+        throw new Error("User not found");
     }
     
     const updatedUser = await db.user.update({
-        where,
+        where: { id: userInfo.id },
         data: { description }
     })
     
@@ -125,25 +139,15 @@ export async function updateUserDescription(identifier: string, description: str
 }
 
 export async function updateUserTags(identifier: string, tags: Tag[]) {
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        where = { username: identifier };
-    } else {
-        // Assume it's an ID
-        where = { id: identifier };
+    if (!userInfo) {
+        throw new Error("User not found");
     }
     
     // Get existing user
     const user = await db.user.findUnique({
-        where,
+        where: { id: userInfo.id },
         include: { tags: true }
     })
     
@@ -163,7 +167,7 @@ export async function updateUserTags(identifier: string, tags: Tag[]) {
     
     // Update user with the tags
     const updatedUser = await db.user.update({
-        where,
+        where: { id: userInfo.id },
         data: {
             tags: {
                 // First disconnect all tags
@@ -176,7 +180,8 @@ export async function updateUserTags(identifier: string, tags: Tag[]) {
     });
     
     // For each new tag name, either find or create the tag and connect it to the user
-    for (const tagName of newTagNames) {
+    // Using Promise.all for better performance with parallel operations
+    await Promise.all(newTagNames.map(async (tagName) => {
         // First check if this tag already exists in the database
         let tag = await db.tag.findFirst({
             where: { name: tagName }
@@ -184,112 +189,95 @@ export async function updateUserTags(identifier: string, tags: Tag[]) {
         
         // If it doesn't exist, create it
         if (!tag) {
-            // Since Tag.id is an @id field and not @default(autoincrement()),
-            // we need to manually handle ID generation
-            // First, find the maximum ID currently in use
-            const maxIdResult = await db.tag.findFirst({
-                orderBy: {
-                    id: 'desc'
-                }
-            });
-            
-            const nextId = maxIdResult ? maxIdResult.id + 1 : 1;
-            
-            // Now create the tag with the new ID
-            tag = await db.tag.create({
-                data: { 
-                    id: nextId,
-                    name: tagName 
-                }
+            // Use a transaction to safely generate next ID and create the tag
+            tag = await db.$transaction(async (tx) => {
+                // Find the maximum ID currently in use
+                const maxIdResult = await tx.tag.findFirst({
+                    orderBy: {
+                        id: 'desc'
+                    }
+                });
+                
+                const nextId = maxIdResult ? maxIdResult.id + 1 : 1;
+                
+                // Now create the tag with the new ID
+                return tx.tag.create({
+                    data: { 
+                        id: nextId,
+                        name: tagName 
+                    }
+                });
             });
         }
         
         // Connect this tag to the user
         await db.user.update({
-            where,
+            where: { id: userInfo.id },
             data: {
                 tags: {
                     connect: { id: tag.id }
                 }
             }
         });
-    }
+    }));
     
     // Get the updated user with all tags
     const finalUser = await db.user.findUnique({
-        where,
+        where: { id: userInfo.id },
         include: { tags: true }
     });
     
     return finalUser;
 }
 
+// Optimized pagination function for user created startups
 export const getUserCreatedStartups = cache(async function getUserCreatedStartups(identifier: string, page = 1, pageSize = 9) {
     // Calculate the skip value for pagination
     const skip = (page - 1) * pageSize;
 
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
-    let userId: string;
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        userId = userByUsername.id;
-    } else {
-        // Assume it's an ID
-        const userById = await db.user.findUnique({
-            where: { id: identifier },
-            select: { id: true }
-        });
-        
-        if (!userById) {
-            throw new Error("User not found");
-        }
-        
-        userId = userById.id;
+    if (!userInfo) {
+        throw new Error("User not found");
     }
+    
+    const userId = userInfo.id;
 
-    // Get startups created by the user
-    const startups = await db.startup.findMany({
-        where: { 
-            creatorUser: userId 
-        },
-        skip,
-        take: pageSize,
-        orderBy: {
-            createdAt: 'desc'
-        },
-        include: {
-            tags: true,
-            images: true,
-            creatorId: {
-                select: {
-                    id: true,
-                    name: true,
-                    username: true,
-                    image: true
-                }
+    // Use Promise.all for parallel queries to improve performance
+    const [startups, totalStartups] = await Promise.all([
+        // Get startups created by the user
+        db.startup.findMany({
+            where: { 
+                creatorUser: userId 
             },
-            participants: {
-                select: {
-                    id: true,
-                    name: true,
-                    username: true,
-                    image: true
+            skip,
+            take: pageSize,
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                tags: {
+                    select: baseTagSelect
+                },
+                images: {
+                    select: baseImageSelect,
+                    take: 1 // Only take first image for performance
+                },
+                creatorId: {
+                    select: baseUserSelect
+                },
+                participants: {
+                    select: baseUserSelect,
+                    take: 5 // Limit participants for performance
                 }
             }
-        }
-    })
-
-    // Get the total count of startups for pagination
-    const totalStartups = await db.startup.count({ 
-        where: { creatorUser: userId } 
-    })
+        }),
+        
+        // Get the total count of startups for pagination
+        db.startup.count({ 
+            where: { creatorUser: userId } 
+        })
+    ]);
 
     // Calculate total pages
     const totalPages = Math.ceil(totalStartups / pageSize)
@@ -305,88 +293,70 @@ export const getUserCreatedStartups = cache(async function getUserCreatedStartup
     }
 })
 
+// Optimized pagination function for user participating startups
 export const getUserParticipatingStartups = cache(async function getUserParticipatingStartups(identifier: string, page = 1, pageSize = 9) {
     // Calculate the skip value for pagination
     const skip = (page - 1) * pageSize;
 
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
-    let userId: string;
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        userId = userByUsername.id;
-    } else {
-        // Assume it's an ID
-        const userById = await db.user.findUnique({
-            where: { id: identifier },
-            select: { id: true }
-        });
-        
-        if (!userById) {
-            throw new Error("User not found");
-        }
-        
-        userId = userById.id;
+    if (!userInfo) {
+        throw new Error("User not found");
     }
+    
+    const userId = userInfo.id;
 
-    // Get startups where the user is a participant but NOT the creator
-    const startups = await db.startup.findMany({
-        where: { 
-            participants: {
-                some: {
-                    id: userId
+    // Use Promise.all for parallel queries to improve performance
+    const [startups, totalStartups] = await Promise.all([
+        // Get startups where the user is a participant but NOT the creator
+        db.startup.findMany({
+            where: { 
+                participants: {
+                    some: {
+                        id: userId
+                    }
+                },
+                NOT: {
+                    creatorUser: userId
                 }
             },
-            NOT: {
-                creatorUser: userId
-            }
-        },
-        skip,
-        take: pageSize,
-        orderBy: {
-            createdAt: 'desc'
-        },
-        include: {
-            tags: true,
-            images: true,
-            creatorId: {
-                select: {
-                    id: true,
-                    name: true,
-                    username: true,
-                    image: true
-                }
+            skip,
+            take: pageSize,
+            orderBy: {
+                createdAt: 'desc'
             },
-            participants: {
-                select: {
-                    id: true,
-                    name: true,
-                    username: true,
-                    image: true
+            include: {
+                tags: {
+                    select: baseTagSelect
+                },
+                images: {
+                    select: baseImageSelect,
+                    take: 1 // Only take first image for performance
+                },
+                creatorId: {
+                    select: baseUserSelect
+                },
+                participants: {
+                    select: baseUserSelect,
+                    take: 5 // Limit participants for performance
                 }
             }
-        }
-    })
-
-    // Get the total count of startups for pagination
-    const totalStartups = await db.startup.count({ 
-        where: { 
-            participants: {
-                some: {
-                    id: userId
+        }),
+        
+        // Get the total count of startups for pagination
+        db.startup.count({ 
+            where: { 
+                participants: {
+                    some: {
+                        id: userId
+                    }
+                },
+                NOT: {
+                    creatorUser: userId
                 }
-            },
-            NOT: {
-                creatorUser: userId
-            }
-        } 
-    })
+            } 
+        })
+    ]);
 
     // Calculate total pages
     const totalPages = Math.ceil(totalStartups / pageSize)
@@ -422,10 +392,7 @@ export const getMostActiveUsers = cache(async function getMostActiveUsers(limit:
       }
     ],
     select: {
-      id: true,
-      username: true,
-      name: true,
-      image: true,
+      ...baseUserSelect,
       _count: {
         select: {
           createdStartups: true,
@@ -439,25 +406,16 @@ export const getMostActiveUsers = cache(async function getMostActiveUsers(limit:
 });
 
 export async function updateUserUsername(identifier: string, username: string) {
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        where = { username: identifier };
-    } else {
-        // Assume it's an ID
-        where = { id: identifier };
+    if (!userInfo) {
+        throw new Error("User not found");
     }
     
     // Check if the new username is already taken
     const existingUser = await db.user.findUnique({
-        where: { username }
+        where: { username },
+        select: { id: true }
     });
     
     if (existingUser) {
@@ -466,60 +424,52 @@ export async function updateUserUsername(identifier: string, username: string) {
     
     // Update the username
     const updatedUser = await db.user.update({
-        where,
-        data: { username }
+        where: { id: userInfo.id },
+        data: { username },
+        select: {
+            id: true,
+            username: true
+        }
     });
     
     return updatedUser;
 }
 
 export async function updateUserName(identifier: string, name: string) {
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        where = { username: identifier };
-    } else {
-        // Assume it's an ID
-        where = { id: identifier };
+    if (!userInfo) {
+        throw new Error("User not found");
     }
     
     // Update the name
     const updatedUser = await db.user.update({
-        where,
-        data: { name }
+        where: { id: userInfo.id },
+        data: { name },
+        select: {
+            id: true,
+            name: true
+        }
     });
     
     return updatedUser;
 }
 
 export async function updateUserImage(identifier: string, imageUrl: string) {
-    // Check if the identifier is a username or ID
-    let where: { username: string } | { id: string };
+    const userInfo = await findUserByIdentifier(identifier);
     
-    // Try to find if this is a valid username first
-    const userByUsername = await db.user.findUnique({
-        where: { username: identifier },
-        select: { id: true }
-    });
-    
-    if (userByUsername) {
-        where = { username: identifier };
-    } else {
-        // Assume it's an ID
-        where = { id: identifier };
+    if (!userInfo) {
+        throw new Error("User not found");
     }
     
     // Update the image URL
     const updatedUser = await db.user.update({
-        where,
-        data: { image: imageUrl }
+        where: { id: userInfo.id },
+        data: { image: imageUrl },
+        select: {
+            id: true,
+            image: true
+        }
     });
     
     return updatedUser;

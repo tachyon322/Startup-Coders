@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useReducer, useCallback, useState, useTransition, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,93 +15,193 @@ interface StartupFormProps {
   tags: Tag[];
 }
 
-export default function StartupForm({ tags }: StartupFormProps) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
-  const [images, setImages] = useState<{ id: string; url: string }[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [formErrors, setFormErrors] = useState<{
+// Form reducer for more efficient state management
+type FormState = {
+  name: string;
+  description: string;
+  selectedTags: Tag[];
+  images: { id: string; url: string }[];
+  formErrors: {
     name?: string;
     description?: string;
     tags?: string;
-  }>({})
-  const [showSuccessToast, setShowSuccessToast] = useState(false)
-  
-  const validateForm = () => {
-    const errors: {
-      name?: string;
-      description?: string;
-      tags?: string;
-    } = {}
-    let isValid = true
-    
-    if (!name.trim()) {
-      errors.name = "Название обязательно"
-      isValid = false
-    }
-    
-    if (!description.trim()) {
-      errors.description = "Описание обязательно"
-      isValid = false
-    } else if (description.length < 20) {
-      errors.description = "Описание должно быть не менее 20 символов"
-      isValid = false
-    }
-    
-    if (selectedTags.length === 0) {
-      errors.tags = "Выберите хотя бы один тег стека технологий"
-      isValid = false
-    }
-    
-    setFormErrors(errors)
-    return isValid
+  };
+  error: string | null;
+  showSuccessToast: boolean;
+}
+
+type FormAction = 
+  | { type: 'SET_NAME'; payload: string }
+  | { type: 'SET_DESCRIPTION'; payload: string }
+  | { type: 'SET_TAGS'; payload: Tag[] }
+  | { type: 'SET_IMAGES'; payload: { id: string; url: string }[] }
+  | { type: 'SET_FORM_ERRORS'; payload: FormState['formErrors'] }
+  | { type: 'CLEAR_ERROR'; field?: keyof FormState['formErrors'] }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_SUCCESS_TOAST'; payload: boolean }
+  | { type: 'RESET_FORM' };
+
+const initialFormState: FormState = {
+  name: "",
+  description: "",
+  selectedTags: [],
+  images: [],
+  formErrors: {},
+  error: null,
+  showSuccessToast: false
+};
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case 'SET_NAME':
+      return { ...state, name: action.payload };
+    case 'SET_DESCRIPTION':
+      return { ...state, description: action.payload };
+    case 'SET_TAGS':
+      return { ...state, selectedTags: action.payload };
+    case 'SET_IMAGES':
+      return { ...state, images: action.payload };
+    case 'SET_FORM_ERRORS':
+      return { ...state, formErrors: action.payload };
+    case 'CLEAR_ERROR':
+      if (action.field) {
+        const newErrors = { ...state.formErrors };
+        delete newErrors[action.field];
+        return { ...state, formErrors: newErrors };
+      }
+      return { ...state, formErrors: {} };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+    case 'SET_SUCCESS_TOAST':
+      return { ...state, showSuccessToast: action.payload };
+    case 'RESET_FORM':
+      return { ...initialFormState };
+    default:
+      return state;
   }
+}
+
+// Field component to reduce re-renders
+const FormField = ({ 
+  label, 
+  error, 
+  children 
+}: { 
+  label: string; 
+  error?: string; 
+  children: React.ReactNode;
+}) => (
+  <div className="space-y-1">
+    <Label htmlFor={label.toLowerCase()}>{label}</Label>
+    {children}
+    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+  </div>
+);
+
+export default function StartupForm({ tags }: StartupFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [formState, dispatch] = useReducer(formReducer, initialFormState);
   
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
+  const validateForm = useCallback(() => {
+    const errors: FormState['formErrors'] = {};
+    let isValid = true;
+    
+    if (!formState.name.trim()) {
+      errors.name = "Название обязательно";
+      isValid = false;
+    }
+    
+    if (!formState.description.trim()) {
+      errors.description = "Описание обязательно";
+      isValid = false;
+    } else if (formState.description.length < 20) {
+      errors.description = "Описание должно быть не менее 20 символов";
+      isValid = false;
+    }
+    
+    if (formState.selectedTags.length === 0) {
+      errors.tags = "Выберите хотя бы один тег стека технологий";
+      isValid = false;
+    }
+    
+    dispatch({ type: 'SET_FORM_ERRORS', payload: errors });
+    return isValid;
+  }, [formState.name, formState.description, formState.selectedTags]);
+  
+  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: 'SET_NAME', payload: e.target.value });
+    if (formState.formErrors.name) {
+      dispatch({ type: 'CLEAR_ERROR', field: 'name' });
+    }
+  }, [formState.formErrors.name]);
+  
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value });
+    if (formState.formErrors.description) {
+      dispatch({ type: 'CLEAR_ERROR', field: 'description' });
+    }
+  }, [formState.formErrors.description]);
+  
+  const handleTagsChange = useCallback((newTags: Tag[]) => {
+    dispatch({ type: 'SET_TAGS', payload: newTags });
+    if (formState.formErrors.tags) {
+      dispatch({ type: 'CLEAR_ERROR', field: 'tags' });
+    }
+  }, [formState.formErrors.tags]);
+  
+  const handleImagesChange = useCallback((newImages: { id: string; url: string }[]) => {
+    dispatch({ type: 'SET_IMAGES', payload: newImages });
+  }, []);
+  
+  const handleCloseToast = useCallback(() => {
+    dispatch({ type: 'SET_SUCCESS_TOAST', payload: false });
+  }, []);
+  
+  const handleCancel = useCallback(() => {
+    router.back();
+  }, [router]);
+  
+  const handleSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch({ type: 'SET_ERROR', payload: "" });
     
     if (!validateForm()) {
-      return
+      return;
     }
     
     startTransition(async () => {
       try {
         await createStartup(
-          name,
-          description,
-          selectedTags,
-          images
-        )
-        setShowSuccessToast(true)
+          formState.name,
+          formState.description,
+          formState.selectedTags,
+          formState.images
+        );
         
-        // Reset form after successful submission
-        setName("")
-        setDescription("")
-        setSelectedTags([])
-        setImages([])
+        dispatch({ type: 'SET_SUCCESS_TOAST', payload: true });
+        dispatch({ type: 'RESET_FORM' });
         
         // Navigate after a brief delay to show the toast
         setTimeout(() => {
-          router.push("/find")
-          router.refresh()
-        }, 1500)
+          router.push("/find");
+          router.refresh();
+        }, 1500);
       } catch (error) {
-        console.error("Ошибка при создании стартапа:", error)
-        setError("Не удалось создать стартап. Пожалуйста, попробуйте снова.")
+        console.error("Ошибка при создании стартапа:", error);
+        dispatch({ 
+          type: 'SET_ERROR', 
+          payload: "Не удалось создать стартап. Пожалуйста, попробуйте снова." 
+        });
       }
-    })
-  }
+    });
+  }, [validateForm, formState.name, formState.description, formState.selectedTags, formState.images, router]);
   
   return (
     <div className="w-full max-w-3xl mx-auto">
       <Toast 
-        visible={showSuccessToast} 
-        onClose={() => setShowSuccessToast(false)}
+        visible={formState.showSuccessToast} 
+        onClose={handleCloseToast}
         variant="success"
       >
         <div className="flex items-center">
@@ -116,79 +216,54 @@ export default function StartupForm({ tags }: StartupFormProps) {
       </Toast>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1">
-          <Label htmlFor="name">Название стартапа</Label>
+        <FormField label="Название стартапа" error={formState.formErrors.name}>
           <Input
             id="name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-              if (formErrors.name) {
-                setFormErrors({...formErrors, name: undefined})
-              }
-            }}
+            value={formState.name}
+            onChange={handleNameChange}
             placeholder="Введите название вашего стартапа"
             disabled={isPending}
-            className={formErrors.name ? "border-red-500" : ""}
+            className={formState.formErrors.name ? "border-red-500" : ""}
           />
-          {formErrors.name && (
-            <p className="text-sm text-red-500 mt-1">{formErrors.name}</p>
-          )}
-        </div>
+        </FormField>
         
-        <div className="space-y-1">
-          <Label htmlFor="description">Описание</Label>
+        <FormField label="Описание" error={formState.formErrors.description}>
           <Textarea
             id="description"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value)
-              if (formErrors.description) {
-                setFormErrors({...formErrors, description: undefined})
-              }
-            }}
+            value={formState.description}
+            onChange={handleDescriptionChange}
             placeholder="Опишите свою идею стартапа подробно..."
-            className={`min-h-[150px] ${formErrors.description ? "border-red-500" : ""}`}
+            className={`min-h-[150px] ${formState.formErrors.description ? "border-red-500" : ""}`}
             disabled={isPending}
           />
-          {formErrors.description ? (
-            <p className="text-sm text-red-500 mt-1">{formErrors.description}</p>
-          ) : (
+          {!formState.formErrors.description && (
             <p className="text-sm text-muted-foreground mt-1">
               Вы можете добавить свои контакты для связи
             </p>
           )}
-        </div>
+        </FormField>
         
-        <div className="space-y-1">
-          <Label htmlFor="tags">Теги</Label>
+        <FormField label="Теги" error={formState.formErrors.tags}>
           <TagInput
             existingTags={tags}
-            selectedTags={selectedTags}
-            onChange={(tags) => {
-              setSelectedTags(tags)
-              if (formErrors.tags) {
-                setFormErrors({...formErrors, tags: undefined})
-              }
-            }}
+            selectedTags={formState.selectedTags}
+            onChange={handleTagsChange}
             disabled={isPending}
-            className={formErrors.tags ? "border-red-500" : ""}
+            className={formState.formErrors.tags ? "border-red-500" : ""}
             placeholder="Введите теги..."
           />
-          {formErrors.tags ? (
-            <p className="text-sm text-red-500 mt-1">{formErrors.tags}</p>
-          ) : (
+          {!formState.formErrors.tags && (
             <p className="text-sm text-muted-foreground mt-1">
               Добавьте теги технологий которые вы используете, чтобы помочь другим пользователям найти вас
             </p>
           )}
-        </div>
+        </FormField>
 
         <div className="space-y-1">
           <Label>Изображения</Label>
           <ImageUpload
-            value={images}
-            onChange={setImages}
+            value={formState.images}
+            onChange={handleImagesChange}
             disabled={isPending}
           />
           <p className="text-sm text-muted-foreground mt-1">
@@ -196,9 +271,9 @@ export default function StartupForm({ tags }: StartupFormProps) {
           </p>
         </div>
         
-        {error && (
+        {formState.error && (
           <div className="rounded-md bg-red-50 p-3">
-            <p className="text-sm text-red-500">{error}</p>
+            <p className="text-sm text-red-500">{formState.error}</p>
           </div>
         )}
         
@@ -221,7 +296,7 @@ export default function StartupForm({ tags }: StartupFormProps) {
           <Button 
             type="button"
             variant="secondary"
-            onClick={() => router.back()}
+            onClick={handleCancel}
             disabled={isPending}
           >
             Отменить

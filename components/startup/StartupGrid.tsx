@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
+import { memo } from "react"
 import StartupCard from "./StartupCard"
 import { Pagination } from "@/components/ui/pagination"
 
@@ -15,7 +16,8 @@ interface StartupGridProps {
   baseUrl: string
 }
 
-export default function StartupGrid({ startups, pagination, baseUrl }: StartupGridProps) {
+// Memoize the entire component to prevent re-renders unless props change
+const StartupGrid = memo(function StartupGrid({ startups, pagination, baseUrl }: StartupGridProps) {
   // Use useMemo to memoize the empty state to prevent re-rendering when props don't change
   const emptyState = useMemo(() => (
     <div className="py-8 text-center">
@@ -36,6 +38,16 @@ export default function StartupGrid({ startups, pagination, baseUrl }: StartupGr
       ))}
     </div>
   ), [startups]);
+
+  // Memoize the pagination component
+  const paginationComponent = useMemo(() => (
+    <Pagination 
+      totalPages={pagination.totalPages}
+      currentPage={pagination.currentPage}
+      baseUrl={baseUrl}
+      className="mt-8"
+    />
+  ), [pagination.totalPages, pagination.currentPage, baseUrl]);
   
   if (startups.length === 0) {
     return emptyState;
@@ -44,13 +56,9 @@ export default function StartupGrid({ startups, pagination, baseUrl }: StartupGr
   return (
     <div className="space-y-6">
       {startupCards}
-      
-      <Pagination 
-        totalPages={pagination.totalPages}
-        currentPage={pagination.currentPage}
-        baseUrl={baseUrl}
-        className="mt-8"
-      />
+      {pagination.totalPages > 1 && paginationComponent}
     </div>
   )
-} 
+});
+
+export default StartupGrid 
