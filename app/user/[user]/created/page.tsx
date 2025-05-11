@@ -1,6 +1,11 @@
 import { redirect } from 'next/navigation';
 
-export default function CreatedPage({ params }: { params: { user: string } }) {
+interface CreatedPageProps {
+  params: Promise<{ user: string }>;
+}
+
+export default async function CreatedPage({ params }: CreatedPageProps) {
+  const userName = (await params).user;
   // Redirect to the main user profile page
-  redirect(`/user/${params.user}`);
+  redirect(`/user/${userName}`);
 }
