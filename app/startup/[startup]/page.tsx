@@ -27,8 +27,8 @@ function LoadingPlaceholder() {
 }
 
 // Server Component
-export default async function StartupPage({ params }: { params: { startup: string } }) {
-  const startupId = params.startup;
+export default async function StartupPage({ params }: { params: Promise<{ startup: string }> }) {
+  const startupId = (await params).startup;
   
   // Parallel data fetching
   const [session, startup] = await Promise.all([
