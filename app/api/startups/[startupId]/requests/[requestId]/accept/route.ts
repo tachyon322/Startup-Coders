@@ -3,10 +3,11 @@ import { acceptRequest } from "@/data/startup";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { requestId: string } }
+  { params }: { params: Promise<{ requestId: string }> }
 ) {
   try {
-    await acceptRequest(params.requestId);
+    const {requestId} = await params;
+    await acceptRequest(requestId);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
