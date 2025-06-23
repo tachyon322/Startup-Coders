@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const resend = getResend();
     
     const { data, error } = await resend.emails.send({
-      from: "Startup Coders <noreply@startup.style32.online>",
+      from: "Startup Coders <noreply@style32.online>",
       to: [email],
       subject: "Ссылка для входа в Startup Coders",
       react: EmailTemplate({ magicLink: url }) as React.ReactElement,
