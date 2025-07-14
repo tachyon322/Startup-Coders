@@ -7,7 +7,7 @@ interface HeadingProps {
 
 export function H1({ children, className = '' }: HeadingProps) {
   return (
-    <h1 className={`text-4xl md:text-6xl font-bold ${className}`}>
+    <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold ${className}`}>
       {children}
     </h1>
   );
@@ -15,7 +15,7 @@ export function H1({ children, className = '' }: HeadingProps) {
 
 export function H2({ children, className = '' }: HeadingProps) {
   return (
-    <h2 className={`text-3xl font-bold ${className}`}>
+    <h2 className={`text-2xl sm:text-3xl font-bold ${className}`}>
       {children}
     </h2>
   );
@@ -23,7 +23,7 @@ export function H2({ children, className = '' }: HeadingProps) {
 
 export function H3({ children, className = '' }: HeadingProps) {
   return (
-    <h3 className={`text-xl font-semibold ${className}`}>
+    <h3 className={`text-lg sm:text-xl font-semibold ${className}`}>
       {children}
     </h3>
   );
@@ -44,7 +44,7 @@ export function Text({ children, className = '' }: TextProps) {
 
 export function LargeText({ children, className = '' }: TextProps) {
   return (
-    <p className={`text-xl ${className}`}>
+    <p className={`text-base sm:text-lg md:text-xl ${className}`}>
       {children}
     </p>
   );
@@ -82,9 +82,9 @@ export function Button({
   };
   
   const sizeClasses = {
-    sm: 'py-2 px-4 text-sm',
-    md: 'py-3 px-6',
-    lg: 'py-3 px-8 text-lg',
+    sm: 'py-1.5 px-3 sm:py-2 sm:px-4 text-sm',
+    md: 'py-2 px-4 sm:py-3 sm:px-6 text-sm sm:text-base',
+    lg: 'py-2.5 px-6 sm:py-3 sm:px-8 text-base sm:text-lg',
   };
   
   return (

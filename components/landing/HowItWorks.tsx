@@ -7,7 +7,7 @@ export default function HowItWorks() {
   const sectionRef = useHowItWorksAnimation();
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="py-20 bg-white">
+    <section id="how-it-works" className="py-20 bg-white">
       <div className="container mx-auto px-4 max-w-6xl">
         <H2 className="text-center mb-16">Как работает StartupCoders.ru</H2>
         

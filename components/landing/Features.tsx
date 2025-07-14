@@ -7,7 +7,7 @@ export default function Features() {
   const sectionRef = useFeaturesAnimation();
 
   return (
-    <section id="features" ref={sectionRef} className="py-20 bg-gray-50">
+    <section id="features" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4 max-w-6xl">
         <H2 className="text-center mb-16">Почему стоит попробовать проект</H2>
         

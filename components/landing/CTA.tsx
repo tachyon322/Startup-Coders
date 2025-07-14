@@ -11,7 +11,7 @@ export default function CTA() {
 
   return (
     <>
-      <section ref={ctaRef} className="py-20 bg-indigo-900 text-white">
+      <section className="py-20 bg-indigo-900 text-white">
         <div className="container mx-auto px-4 max-w-6xl text-center">
           <H2 className="mb-6 md:text-4xl">Готовы найти своего партнера для стартапа?</H2>
           <LargeText className="mb-8 max-w-2xl mx-auto">
