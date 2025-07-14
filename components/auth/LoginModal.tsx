@@ -91,7 +91,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsLoading(true);
     const { data, error } = await authClient.signIn.magicLink({
       email: email,
-      callbackURL: "/complete", //redirect after successful login (optional)
+      callbackURL: "/find", //redirect after successful login (optional)
     });
     // This would have actual implementation in a real app
     setTimeout(() => {
@@ -132,6 +132,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsGithubLoading(true);
     const data = await authClient.signIn.social({
       provider: "github",
+      callbackURL: "/find"
     });
     console.log(data);
     setIsGithubLoading(false);

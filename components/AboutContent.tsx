@@ -7,27 +7,13 @@ const AboutContent = () => {
       
       <div className="prose prose-lg max-w-none">
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold text-indigo-800 mb-4">Наша миссия</h2>
           <p className="text-gray-700 mb-4">
-            StartupCoders.ru — это платформа, которая соединяет талантливых разработчиков, дизайнеров, 
-            маркетологов и других специалистов, желающих объединить усилия для создания
-            стартапов.
+            Сайт создан на NextJs (планирую переписать на solid-start) <br />
+            Является некоммерческим. <br />
+            <span className='text-red-400'>САЙТ НЕ НЕСЕТ ОТВЕТСТВЕННОСТИ ЗА ИНФОРМАЦИЮ КОТОРУЮ ПУБЛИКУЮТ ПОЛЬЗОВАТЕЛИ НА САЙТЕ!</span>
           </p>
-        </section>
-
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold text-indigo-800 mb-4">Что мы предлагаем</h2>
-          <ul className="list-disc list-inside space-y-3 text-gray-700">
-            <li>
-              <strong>Поиск партнеров</strong> — находите специалистов с дополняющими навыками для вашего проекта
-            </li>
-            <li>
-              <strong>Представление идей</strong> — делитесь своими концепциями и привлекайте заинтересованных участников
-            </li>
-            <li>
-              <strong>Формирование команд</strong> — создавайте сбалансированные команды для реализации стартапов
-            </li>
-          </ul>
+            Мой тикток: <a href="https://www.tiktok.com/@dens30451?_t=ZN-8xCf79Njmg2&_r=1" className="text-blue-500 hover:underline">@dens30451</a> <br />
+            Мой телеграм: <a href="https://t.me/QTSJSMA" className="text-blue-500 hover:underline">@QTSJSMA</a> <br />
         </section>
       </div>
     </div>
