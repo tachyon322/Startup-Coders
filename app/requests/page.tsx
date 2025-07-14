@@ -27,13 +27,13 @@ export default async function RequestsPage() {
         <Header session={session} />
         
         <main className="max-w-4xl mx-auto pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Requests</h1>
+          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Запросы</h1>
           
           <div className="space-y-8">
             {/* Incoming Requests */}
             <div>
               <h2 className="text-xl font-semibold text-indigo-800 mb-4">
-                Incoming Requests
+                Входящие запросы
                 {incoming.length > 0 && (
                   <span className="ml-2 px-2 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-full">
                     {incoming.length}
@@ -43,7 +43,7 @@ export default async function RequestsPage() {
               
               {incoming.length === 0 ? (
                 <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-                  No incoming requests yet
+                  Пока никто не подал запросов на ваши проекты(
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -88,7 +88,7 @@ export default async function RequestsPage() {
             {/* Outgoing Requests */}
             <div>
               <h2 className="text-xl font-semibold text-indigo-800 mb-4">
-                Your Requests
+                Ваши запросы
                 {outgoing.length > 0 && (
                   <span className="ml-2 px-2 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-full">
                     {outgoing.length}
@@ -98,12 +98,12 @@ export default async function RequestsPage() {
               
               {outgoing.length === 0 ? (
                 <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
-                  <p className="mb-4">You haven't sent any requests yet</p>
+                  <p className="mb-4">Вы не подавали запрос на участие в других стартапах</p>
                   <Link 
                     href="/find" 
                     className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                   >
-                    Find Startups
+                    Найти
                   </Link>
                 </div>
               ) : (
@@ -141,9 +141,9 @@ export default async function RequestsPage() {
       <div className="min-h-screen bg-gray-50">
         <Header session={session} />
         <main className="max-w-4xl mx-auto pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Requests</h1>
+          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Запросы</h1>
           <div className="bg-white rounded-lg shadow p-6 text-center text-red-500">
-            Error loading requests. Please try again later.
+            Ошибка загрузки. Пожалуйста попробуйте еще раз!
           </div>
         </main>
       </div>
