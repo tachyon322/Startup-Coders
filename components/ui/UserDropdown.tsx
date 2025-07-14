@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu"
-import { User, LogOut } from "lucide-react"
+import { User, LogOut, ChartNoAxesGantt } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -60,8 +60,8 @@ export default function UserDropdown({ session }: UserDropdownProps) {
 
         <Link href={"/requests"}>
           <DropdownMenuItem className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-50 flex items-center gap-2 text-black">
-            <User size={16} />
-            <span>Запросы</span>
+            <ChartNoAxesGantt size={16} />
+            <span>Управление</span>
           </DropdownMenuItem>
         </Link>
 

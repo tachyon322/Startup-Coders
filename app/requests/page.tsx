@@ -2,13 +2,14 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { getSession } from '@/lib/auth/getSession';
 import Header from '@/components/landing/Header';
-import { getUserRequests } from '@/data/startup';
+import { getUserRequests, getUserStartupsWithParticipants } from '@/data/startup';
 import Link from 'next/link';
 import RequestCard from '@/components/startup/RequestCard';
 import RequestActions from '@/components/startup/RequestActions';
+import UserStartupSquaresWrapper from '@/components/startup/UserStartupSquaresWrapper';
 
 export const metadata = {
-  title: "Requests | Startup Match",
+  title: "Управление | StartupCoders",
   description: "Manage your startup participation requests"
 };
 
@@ -21,14 +22,19 @@ export default async function RequestsPage() {
   
   try {
     const { incoming, outgoing } = await getUserRequests();
+    const userStartups = await getUserStartupsWithParticipants();
 
     return (
       <div className="min-h-screen bg-gray-50">
         <Header session={session} />
         
         <main className="max-w-4xl mx-auto pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Запросы</h1>
+          <h1 className="text-3xl font-bold text-indigo-900 mb-8">Управление запросами</h1>
           
+
+          {/* User's Startups Section */}
+          <UserStartupSquaresWrapper startups={userStartups} />
+
           <div className="space-y-8">
             {/* Incoming Requests */}
             <div>
@@ -50,19 +56,21 @@ export default async function RequestsPage() {
                   {incoming.map((request: any) => {
                     // Get the first user from requestBy array
                     const requestUser = request.requestBy && request.requestBy[0];
+                    // Get the first startup from startup array
+                    const requestStartup = request.startup && request.startup[0];
                     
-                    if (!requestUser || !request.startup) {
+                    if (!requestUser || !requestStartup) {
                       return null; // Skip invalid requests
                     }
                     
                     return (
-                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-5">
+                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-1">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <RequestCard
                               requestId={String(request.id)}
-                              startupName={request.startup.name}
-                              startupId={request.startup.id}
+                              startupName={requestStartup.name}
+                              startupId={requestStartup.id}
                               userName={requestUser.name || "Anonymous"}
                               userId={requestUser.id || ""}
                               userImage={requestUser.image || undefined}
@@ -74,7 +82,7 @@ export default async function RequestsPage() {
                           <div className="ml-4">
                             <RequestActions
                               requestId={String(request.id)}
-                              startupId={request.startup.id}
+                              startupId={requestStartup.id}
                             />
                           </div>
                         </div>
@@ -109,16 +117,19 @@ export default async function RequestsPage() {
               ) : (
                 <div className="space-y-4">
                   {outgoing.map((request: any) => {
-                    if (!request.startup) {
+                    // Get the first startup from startup array
+                    const requestStartup = request.startup && request.startup[0];
+                    
+                    if (!requestStartup) {
                       return null; // Skip invalid requests
                     }
                     
                     return (
-                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-5">
+                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-1">
                         <RequestCard
                           requestId={String(request.id)}
-                          startupName={request.startup.name}
-                          startupId={request.startup.id}
+                          startupName={requestStartup.name}
+                          startupId={requestStartup.id}
                           userName={session.user.name || "You"}
                           userId={session.user.id}
                           userImage={session.user.image || undefined}

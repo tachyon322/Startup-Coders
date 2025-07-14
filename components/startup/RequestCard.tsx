@@ -64,7 +64,7 @@ export default function RequestCard({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-5 mb-4">
+    <div className="bg-white rounded-lg p-5 mb-4">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
@@ -88,24 +88,37 @@ export default function RequestCard({
           <div>
             <h3 className="font-medium text-gray-900">
               {type === "incoming" ? (
-                <Link 
-                  href={`/user/${userId}`} 
-                  className="hover:text-indigo-600 transition-colors"
-                >
-                  {userName || "Anonymous"}
-                </Link>
+                <>
+                  <Link
+                    href={`/user/${userId}`}
+                    className="hover:text-indigo-600 transition-colors"
+                  >
+                    {userName || "Anonymous"}
+                  </Link>
+                  <span className="text-gray-500 font-normal">
+                    {" "}запросил присоединиться к{" "}
+                  </span>
+                  <Link
+                    href={`/startup/${startupId}`}
+                    className="hover:text-indigo-600 transition-colors"
+                  >
+                    {startupName}
+                  </Link>
+                </>
               ) : (
-                <span>You</span>
+                <>
+                  <span>Вы</span>
+                  <span className="text-gray-500 font-normal">
+                    {" "}запросили присоединиться к{" "}
+                  </span>
+                  <Link
+                    href={`/startup/${startupId}`}
+                    className="hover:text-indigo-600 transition-colors"
+                  >
+                    {startupName}
+                  </Link>
+                </>
               )}
-              <span className="text-gray-500 font-normal">
-                {" "}requested to join{" "}
-              </span>
-              <Link 
-                href={`/startup/${startupId}`} 
-                className="hover:text-indigo-600 transition-colors"
-              >
-                {startupName}
-              </Link>
             </h3>
             <div className="text-sm text-gray-500 flex items-center">
               <Calendar className="w-3 h-3 mr-1" />
@@ -115,27 +128,6 @@ export default function RequestCard({
             </div>
           </div>
         </div>
-        
-        {type === "incoming" && (
-          <div className="flex space-x-2">
-            <button
-              onClick={handleAccept}
-              disabled={isLoading}
-              className="p-2 bg-green-50 text-green-600 rounded-full hover:bg-green-100 transition-colors disabled:opacity-50"
-              title="Accept request"
-            >
-              <Check className="w-5 h-5" />
-            </button>
-            <button
-              onClick={handleReject}
-              disabled={isLoading}
-              className="p-2 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50"
-              title="Reject request"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
       </div>
       
       {message && (

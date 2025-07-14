@@ -64,7 +64,7 @@ export default function RequestActions({ requestId, startupId }: RequestActionsP
         <button
           onClick={handleAccept}
           disabled={isLoading}
-          className="p-2 bg-green-50 text-green-600 rounded-full hover:bg-green-100 transition-colors disabled:opacity-50"
+          className="p-2 bg-green-50 text-green-600 cursor-pointer rounded-full hover:bg-green-100 transition-colors disabled:opacity-50"
           title="Accept request"
         >
           <Check className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function RequestActions({ requestId, startupId }: RequestActionsP
         <button
           onClick={handleReject}
           disabled={isLoading}
-          className="p-2 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50"
+          className="p-2 bg-red-50 text-red-600 cursor-pointer rounded-full hover:bg-red-100 transition-colors disabled:opacity-50"
           title="Reject request"
         >
           <X className="w-5 h-5" />

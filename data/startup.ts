@@ -406,15 +406,31 @@ export const getUserRequests = cache(async function getUserRequests() {
     }
   })
 
-  // Get all startups created by the user
-  const createdStartups = await db.startup.findMany({
+  // Get all incoming requests for startups created by the user
+  const incomingRequests = await db.startupRequest.findMany({
     where: {
-      creatorUser: session.user.id
+      startup: {
+        some: {
+          creatorUser: session.user.id
+        }
+      }
     },
     include: {
-      StartupRequest: {
+      startup: {
         include: {
-          requestBy: {
+          tags: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          images: {
+            select: {
+              id: true,
+              url: true
+            }
+          },
+          creatorId: {
             select: {
               id: true,
               name: true,
@@ -424,33 +440,16 @@ export const getUserRequests = cache(async function getUserRequests() {
           }
         }
       },
-      tags: {
+      requestBy: {
         select: {
           id: true,
-          name: true
-        }
-      },
-      images: {
-        select: {
-          id: true,
-          url: true
+          name: true,
+          username: true,
+          image: true
         }
       }
     }
   })
-
-  // Extract all incoming requests from the user's startups
-  const incomingRequests = createdStartups.flatMap(startup => 
-    startup.StartupRequest ? [{ 
-      ...startup.StartupRequest,
-      startup: {
-        id: startup.id,
-        name: startup.name,
-        tags: startup.tags,
-        images: startup.images
-      }
-    }] : []
-  )
 
   return {
     outgoing: requests,
@@ -514,6 +513,120 @@ export async function acceptRequest(requestId: string) {
   })
 
   return true
+}
+
+// Get all startups created by the current user (without participants for performance)
+export const getUserStartupsWithParticipants = cache(async function getUserStartupsWithParticipants() {
+  const session = await getSession()
+  
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized")
+  }
+
+  const startups = await db.startup.findMany({
+    where: {
+      creatorUser: session.user.id
+    },
+    include: {
+      images: {
+        select: {
+          id: true,
+          url: true
+        }
+      },
+      _count: {
+        select: {
+          participants: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+
+  return startups.map(startup => ({
+    ...startup,
+    participantCount: startup._count.participants
+  }))
+})
+
+// Remove a participant from a startup
+export async function removeParticipantFromStartup(startupId: string, userId: string) {
+  const session = await getSession()
+  
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized")
+  }
+
+  // Verify that the current user is the startup creator
+  const startup = await db.startup.findUnique({
+    where: { id: startupId },
+    select: { creatorUser: true }
+  })
+
+  if (!startup) {
+    throw new Error("Startup not found")
+  }
+
+  if (startup.creatorUser !== session.user.id) {
+    throw new Error("Only the startup creator can remove participants")
+  }
+
+  // Prevent creator from removing themselves
+  if (userId === startup.creatorUser) {
+    throw new Error("The creator cannot be removed from their own startup")
+  }
+
+  // Remove the participant
+  await db.startup.update({
+    where: { id: startupId },
+    data: {
+      participants: {
+        disconnect: { id: userId }
+      }
+    }
+  })
+
+  return true
+}
+
+// Get participants for a specific startup
+export async function getStartupParticipants(startupId: string) {
+  const session = await getSession()
+  
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized")
+  }
+
+  // Verify that the current user is the startup creator
+  const startup = await db.startup.findUnique({
+    where: { id: startupId },
+    select: {
+      creatorUser: true,
+      participants: {
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          image: true
+        }
+      }
+    }
+  })
+
+  if (!startup) {
+    throw new Error("Startup not found")
+  }
+
+  if (startup.creatorUser !== session.user.id) {
+    throw new Error("Only the startup creator can view participants")
+  }
+
+  return {
+    participants: startup.participants,
+    creatorId: startup.creatorUser
+  }
 }
 
 export async function rejectRequest(requestId: string) {
