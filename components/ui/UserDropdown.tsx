@@ -25,17 +25,17 @@ export default function UserDropdown({ session }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <div className="cursor-pointer overflow-hidden rounded-full">
+        <div className="cursor-pointer w-8 h-8 overflow-hidden rounded-full">
           {session.user.image ? (
             <Image
               src={session.user.image}
               alt={session.user.name || ""}
               width={32}
               height={32}
-              className="rounded-full object-cover"
+              className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-8 h-8 bg-indigo-400 rounded-full flex items-center justify-center text-sm font-semibold text-white">
+            <div className="w-full h-full bg-indigo-400 rounded-full flex items-center justify-center text-sm font-semibold text-white">
               {session.user.name
                 ? session.user.name.charAt(0).toUpperCase()
                 : "U"}

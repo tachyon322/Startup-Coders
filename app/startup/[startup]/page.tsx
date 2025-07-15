@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/landing/Header";
-import { getStartupById, hasRequestedAccess } from "@/data/startup";
+import { getStartupById, hasRequestedAccess, getTags } from "@/data/startup";
 import { getSession } from "@/lib/auth/getSession";
 import StartupHeader from "@/components/startup/StartupHeader";
 import StartupImageGallery from "@/components/startup/StartupImageGallery";
@@ -31,9 +31,10 @@ export default async function StartupPage({ params }: { params: Promise<{ startu
   const startupId = (await params).startup;
   
   // Parallel data fetching
-  const [session, startup] = await Promise.all([
+  const [session, startup, availableTags] = await Promise.all([
     getSession(),
-    getStartupById(startupId)
+    getStartupById(startupId),
+    getTags()
   ]);
   
   // If startup doesn't exist, show 404
@@ -69,10 +70,14 @@ export default async function StartupPage({ params }: { params: Promise<{ startu
           <div className="bg-gray-50 rounded-xs overflow-hidden md:w-2/3">
             <Suspense fallback={<LoadingPlaceholder />}>
               {/* Startup info */}
-              <StartupHeader 
-                name={startup.name} 
+              <StartupHeader
+                name={startup.name}
                 tags={startup.tags}
                 description={startup.description}
+                isCreator={!!isCreator}
+                startupId={startupId}
+                availableTags={availableTags}
+                images={startup.images}
               />
               
               {/* Image gallery with lazy loaded images */}

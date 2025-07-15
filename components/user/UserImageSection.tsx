@@ -33,8 +33,9 @@ export function UserImageSection({
           alt={name || "Пользователь (без имени)"}
           fill
           className="rounded-xl object-cover object-center"
-          quality={70}
+          quality={90}
           priority
+          sizes="128px"
         />
       ) : (
         <div className="h-full w-full flex items-center justify-center text-4xl font-bold text-indigo-500">

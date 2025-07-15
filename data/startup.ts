@@ -672,4 +672,115 @@ export async function rejectRequest(requestId: string) {
   })
 
   return true
-} 
+}
+
+export async function updateStartup(
+  startupId: string,
+  name: string,
+  description: string,
+  tags: Tag[],
+  images: { id: string, url: string }[] = []
+) {
+  const session = await getSession()
+  
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized")
+  }
+
+  // Verify that the current user is the startup creator
+  const startup = await db.startup.findUnique({
+    where: { id: startupId },
+    select: { creatorUser: true }
+  })
+
+  if (!startup) {
+    throw new Error("Startup not found")
+  }
+
+  if (startup.creatorUser !== session.user.id) {
+    throw new Error("Only the startup creator can edit the startup")
+  }
+
+  // Optimize tag handling (same logic as createStartup)
+  const existingTags = tags.filter(tag => tag.id).map(tag => ({ id: tag.id as number }))
+  const newTagNames = Array.from(new Set(tags.filter(tag => !tag.id).map(tag => tag.name)))
+  
+  let allTagConnections = [...existingTags]
+  
+  if (newTagNames.length > 0) {
+    const existingTagsByName = await db.tag.findMany({
+      where: {
+        name: {
+          in: newTagNames
+        }
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    const existingTagNameSet = new Set(existingTagsByName.map(tag => tag.name))
+    allTagConnections.push(...existingTagsByName.map(tag => ({ id: tag.id })))
+    
+    const trulyNewTagNames = newTagNames.filter(name => !existingTagNameSet.has(name))
+    
+    if (trulyNewTagNames.length > 0) {
+      const highestIdTag = await db.tag.findFirst({
+        orderBy: { id: 'desc' }
+      })
+      
+      let nextId = highestIdTag ? highestIdTag.id + 1 : 1
+      
+      const newTags = await db.$transaction(
+        trulyNewTagNames.map((name) => {
+          const tagId = nextId++
+          return db.tag.create({
+            data: {
+              id: tagId,
+              name
+            },
+            select: {
+              id: true
+            }
+          })
+        })
+      )
+      
+      allTagConnections.push(...newTags.map(tag => ({ id: tag.id })))
+    }
+  }
+  
+  // Update the startup in a transaction
+  const updatedStartup = await db.$transaction(async (tx) => {
+    // First, delete all existing images
+    await tx.images.deleteMany({
+      where: { startupId }
+    })
+    
+    // Then update the startup with new data
+    return tx.startup.update({
+      where: { id: startupId },
+      data: {
+        name,
+        description,
+        tags: {
+          set: [], // Clear existing tags
+          connect: allTagConnections // Connect new tags
+        },
+        images: {
+          create: images.map(image => ({
+            url: image.url
+          }))
+        }
+      },
+      include: {
+        images: true,
+        tags: true,
+        creatorId: true
+      }
+    })
+  })
+  
+  return updatedStartup
+}

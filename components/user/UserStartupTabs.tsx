@@ -24,12 +24,14 @@ function UserStartupTabs({
   return (
     <div className="mt-8">
       <Tabs defaultValue="created" onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-8">
-          <TabsTrigger value="created">
-            Созданные стартапы ({createdStartups.length})
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 mb-8 h-auto sm:h-10">
+          <TabsTrigger value="created" className="text-xs sm:text-sm px-2 sm:px-3 py-2 sm:py-1.5 whitespace-normal sm:whitespace-nowrap text-center">
+            <span className="block sm:inline">Созданные стартапы</span>
+            <span className="block sm:inline sm:ml-1">({createdStartups.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="participating">
-            Участия в стартапах ({participatingStartups.length})
+          <TabsTrigger value="participating" className="text-xs sm:text-sm px-2 sm:px-3 py-2 sm:py-1.5 whitespace-normal sm:whitespace-nowrap text-center">
+            <span className="block sm:inline">Участия в стартапах</span>
+            <span className="block sm:inline sm:ml-1">({participatingStartups.length})</span>
           </TabsTrigger>
         </TabsList>
         
@@ -38,8 +40,8 @@ function UserStartupTabs({
             startups={createdStartups} 
             emptyMessage={
               isCurrentUser
-                ? "Вы еще не создали ни одного стартапа"
-                : `${username} еще не создал ни одного стартапа`
+                ? "Вы не создали ни одного стартапа"
+                : `${username} не создал ни одного стартапа`
             }
             emptyActionLabel={isCurrentUser ? "Создать стартап" : undefined}
             emptyActionHref={isCurrentUser ? "/create" : undefined}
@@ -51,8 +53,8 @@ function UserStartupTabs({
             startups={participatingStartups} 
             emptyMessage={
               isCurrentUser
-                ? "Вы еще не участвуете ни в одном стартапе"
-                : `${username} еще не участвует ни в одном стартапе`
+                ? "Вы не участвуете ни в одном стартапе"
+                : `${username} не участвует ни в одном стартапе`
             }
           />
         </TabsContent>

@@ -61,6 +61,8 @@ const StartupCard = memo(function StartupCard({ startup }: { startup: any }) {
               width={64}
               height={64}
               className="h-16 w-16 object-cover"
+              quality={90}
+              sizes="64px"
             />
           ) : (
             <div className="h-16 w-16 bg-indigo-100 flex items-center justify-center">

@@ -42,7 +42,7 @@ export function EditImageDialog({
   const handleSubmit = async () => {
     try {
       if (images.length === 0) {
-        setError("Please upload a profile image")
+        setError("Пожалуйста, загрузите фото профиля")
         return
       }
       
@@ -59,8 +59,8 @@ export function EditImageDialog({
       onImageUpdated(imageUrl)
       setIsOpen(false)
     } catch (error) {
-      console.error("Error updating profile image:", error)
-      setError("An error occurred. Please try again.")
+      console.error("Ошибка обновления фотографии", error)
+      setError("Возникла ошибка. Попробуйте еще раз")
     } finally {
       setIsSubmitting(false)
     }
@@ -72,7 +72,7 @@ export function EditImageDialog({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-100"
+          className="absolute bottom-0 right-0 h-8 w-8 bg-white border border-gray-200 shadow-sm hover:bg-gray-100"
           aria-label="Изменить фото профиля"
         >
           <Camera className="h-4 w-4 text-gray-700" />

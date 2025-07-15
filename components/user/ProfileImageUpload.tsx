@@ -79,7 +79,7 @@ export function ProfileImageUpload({ onChange, value, disabled }: ProfileImageUp
     <div className="space-y-4">
       {value.length > 0 ? (
         <div className="flex flex-col items-center">
-          <div className="relative h-32 w-32 rounded-full overflow-hidden bg-indigo-100 border-4 border-white shadow-lg mb-4">
+          <div className="relative h-32 w-32 rounded-xl overflow-hidden bg-indigo-100 border-4 border-gray-100 mb-4">
             <Image
               src={value[0].url}
               alt="Profile image"

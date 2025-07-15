@@ -5,6 +5,8 @@ import Image from "next/image";
 import { X, UserMinus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { SquareArrowOutUpRight } from 'lucide-react';
 
 interface Participant {
   id: string;
@@ -42,7 +44,7 @@ export default function StartupParticipantsDialog({
   const handleRemoveParticipant = async (userId: string) => {
     setRemovingUserId(userId);
     setInternalError(null);
-    
+
     try {
       await onRemoveParticipant(startupId, userId);
     } catch (err) {
@@ -56,11 +58,11 @@ export default function StartupParticipantsDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-indigo-900">
-            Участники - {startupName}
+          <DialogTitle className="flex gap-1 text-xl font-semibold text-indigo-900">
+            Участники - <Link className="flex items-center gap-1 text-indigo-500" href={`startup/${startupId}`}>{startupName} <SquareArrowOutUpRight size={15} /></Link>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="mt-4">
           {isLoading ? (
             <div className="flex justify-center py-8">
@@ -98,7 +100,7 @@ export default function StartupParticipantsDialog({
                         </span>
                       </div>
                     )}
-                    
+
                     <div>
                       <p className="font-medium text-gray-900">
                         {participant.name || participant.username || "Anonymous"}
@@ -113,7 +115,7 @@ export default function StartupParticipantsDialog({
                       )}
                     </div>
                   </div>
-                  
+
                   {participant.id !== creatorId ? (
                     <Button
                       variant="ghost"
@@ -137,7 +139,7 @@ export default function StartupParticipantsDialog({
               ))}
             </div>
           )}
-          
+
           {internalError && (
             <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg">
               {internalError}
