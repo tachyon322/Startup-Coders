@@ -1,5 +1,3 @@
-"use server";
-
 import { getUser, getMostActiveUsers } from "@/data/user";
 import { notFound } from "next/navigation";
 import Header from "@/components/landing/Header";

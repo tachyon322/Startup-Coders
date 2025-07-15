@@ -116,7 +116,7 @@ function StartupCard({ startup }: StartupCardProps) {
 
   return (
     <Link href={`/startup/${startup.id}`} className="block h-full">
-      <div className="bg-white rounded-xs overflow-hidden border border-gray-100 hover:bg-gray-50 transition-all duration-200 h-full flex flex-col">
+      <div className="bg-white rounded-xs overflow-hidden border border-gray-200 hover:bg-gray-50 transition-all duration-200 h-full flex flex-col">
         <div className="relative h-48 bg-gray-100">
           {imageDisplay}
         </div>
@@ -146,8 +146,9 @@ function StartupCard({ startup }: StartupCardProps) {
               />
               <div className="text-sm">
                 <span className="text-gray-500">от</span>{" "}
-                <span className="font-medium text-indigo-600">
-                  {startup.creatorId.username || startup.creatorId.id || 'Аноним'}
+                <span className="font-medium text-indigo-600" >
+                  {(startup.creatorId.username || startup.creatorId.id || 'Аноним').slice(0, 13)}
+                  {((startup.creatorId.username || startup.creatorId.id || 'Аноним').length > 13) ? '…' : ''}
                 </span>
               </div>
             </div>
@@ -168,4 +169,4 @@ function StartupCard({ startup }: StartupCardProps) {
 }
 
 // Memoize the entire component to prevent re-renders unless props change
-export default memo(StartupCard); 
+export default memo(StartupCard);

@@ -3,6 +3,8 @@ import Header from "@/components/landing/Header";
 import { getSession } from "@/lib/auth/getSession";
 import AboutContent from "@/components/AboutContent";
 
+export const dynamic = 'force-dynamic';
+
 export const generateStaticParams = async () => {
   return [];
 };

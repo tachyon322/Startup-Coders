@@ -8,6 +8,8 @@ import RequestCard from '@/components/startup/RequestCard';
 import RequestActions from '@/components/startup/RequestActions';
 import UserStartupSquaresWrapper from '@/components/startup/UserStartupSquaresWrapper';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Управление | StartupCoders",
   description: "Manage your startup participation requests"
@@ -48,7 +50,7 @@ export default async function RequestsPage() {
               </h2>
               
               {incoming.length === 0 ? (
-                <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+                <div className="bg-white rounded-lg p-6 border-2 border-gray-200 text-center text-gray-500">
                   Пока никто не подал запросов на ваши проекты(
                 </div>
               ) : (
@@ -64,7 +66,7 @@ export default async function RequestsPage() {
                     }
                     
                     return (
-                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-1">
+                      <div key={String(request.id)} className="bg-white rounded-lg p-1">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <RequestCard
@@ -105,7 +107,7 @@ export default async function RequestsPage() {
               </h2>
               
               {outgoing.length === 0 ? (
-                <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+                <div className="bg-white rounded-lg border-2 border-gray-200 p-6 text-center text-gray-500">
                   <p className="mb-4">Вы не подавали запрос на участие в других стартапах</p>
                   <Link 
                     href="/find" 
@@ -125,7 +127,7 @@ export default async function RequestsPage() {
                     }
                     
                     return (
-                      <div key={String(request.id)} className="bg-white rounded-lg shadow p-1">
+                      <div key={String(request.id)} className="bg-white rounded-lg  p-1">
                         <RequestCard
                           requestId={String(request.id)}
                           startupName={requestStartup.name}

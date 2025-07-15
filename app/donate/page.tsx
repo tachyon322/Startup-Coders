@@ -3,6 +3,8 @@ import Header from "@/components/landing/Header";
 import { getSession } from "@/lib/auth/getSession";
 import DonateForm from "@/components/DonateForm";
 
+export const dynamic = 'force-dynamic';
+
 export const generateStaticParams = async () => {
   return [];
 };
