@@ -9,11 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu"
 import { User, LogOut, ChartNoAxesGantt } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { Session } from "@/types/base"
 import { authClient } from "@/lib/auth/auth-client"
+import { UserAvatarPlaceholder } from "./ImagePlaceholder"
 
 interface UserDropdownProps {
   session: Session
@@ -25,22 +25,17 @@ export default function UserDropdown({ session }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <div className="cursor-pointer w-8 h-8 overflow-hidden rounded-full">
-          {session.user.image ? (
-            <Image
-              src={session.user.image}
-              alt={session.user.name || ""}
-              width={32}
-              height={32}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-indigo-400 rounded-full flex items-center justify-center text-sm font-semibold text-white">
-              {session.user.name
-                ? session.user.name.charAt(0).toUpperCase()
-                : "U"}
-            </div>
-          )}
+        <div className="cursor-pointer">
+          <UserAvatarPlaceholder
+            user={{
+              name: session.user.name,
+              username: session.user.username,
+              image: session.user.image
+            }}
+            size="sm"
+            className="bg-indigo-400 text-white hover:bg-indigo-500 transition-colors"
+            alt={session.user.name || "User menu"}
+          />
         </div>
       </DropdownMenuTrigger>
 

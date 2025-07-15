@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Users } from "lucide-react";
 import { Suspense } from "react";
+import { UserAvatarPlaceholder } from "../ui/ImagePlaceholder";
 
 interface StartupSidebarProps {
   creatorId: {
@@ -53,21 +53,16 @@ export default function StartupSidebar({
         <div className="p-6 border-t border-gray-100">
           <h2 className="text-lg font-semibold text-indigo-950 mb-4">Создатель</h2>
           <Link href={`/user/${creatorId.username || creatorId.id}`} className="flex items-start space-x-4">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
-              {creatorId.image ? (
-                <Image
-                  src={creatorId.image}
-                  alt={creatorId.name || 'Creator'}
-                  width={32}
-                  height={32}
-                  className="object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-indigo-100 text-indigo-600 font-medium text-lg">
-                  {(creatorId.name || 'A')[0].toUpperCase()}
-                </div>
-              )}
-            </div>
+            <UserAvatarPlaceholder
+              user={{
+                name: creatorId.name,
+                username: creatorId.username,
+                image: creatorId.image
+              }}
+              size="sm"
+              alt={creatorId.name || creatorId.username || 'Creator'}
+              className="hover:ring-2 hover:ring-indigo-300 transition-all"
+            />
             <div>
               <p className="font-medium text-indigo-800">
                 {creatorId.name || creatorId.username || 'Anonymous'}
@@ -95,21 +90,12 @@ export default function StartupSidebar({
             <div className="space-y-3 max-h-60 overflow-y-auto">
               {participants.map(user => (
                 <div key={user.id} className="flex items-center space-x-3">
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
-                    {user.image ? (
-                      <Image
-                        src={user.image}
-                        alt={user.name || 'User'}
-                        width={32}
-                        height={32}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-indigo-100 text-indigo-600 font-medium">
-                        {(user.name || 'A')[0].toUpperCase()}
-                      </div>
-                    )}
-                  </div>
+                  <UserAvatarPlaceholder
+                    user={user}
+                    size="sm"
+                    alt={user.name || user.username || 'Participant'}
+                    className="hover:ring-2 hover:ring-indigo-300 transition-all"
+                  />
                   <div>
                     <Link 
                       href={`/user/${user.username || user.id}`}

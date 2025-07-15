@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import { UserAvatarPlaceholder } from "../ui/ImagePlaceholder"
 import { EditImageDialog } from "./EditImageDialog"
 
 interface UserImageSectionProps {
@@ -12,12 +12,12 @@ interface UserImageSectionProps {
   isCurrentUser: boolean
 }
 
-export function UserImageSection({ 
-  image, 
+export function UserImageSection({
+  image,
   name,
   username,
   userId,
-  isCurrentUser 
+  isCurrentUser
 }: UserImageSectionProps) {
   const [currentImage, setCurrentImage] = useState(image || "")
 
@@ -26,22 +26,19 @@ export function UserImageSection({
   }
 
   return (
-    <div className="relative h-32 w-32 bg-indigo-100 border-4 border-white shadow-lg rounded-xl">
-      {currentImage ? (
-        <Image
-          src={currentImage}
-          alt={name || "Пользователь (без имени)"}
-          fill
-          className="rounded-xl object-cover object-center"
-          quality={90}
-          priority
-          sizes="128px"
-        />
-      ) : (
-        <div className="h-full w-full flex items-center justify-center text-4xl font-bold text-indigo-500">
-          {name ? name.charAt(0).toUpperCase() : username ? username.charAt(0).toUpperCase() : "U"}
-        </div>
-      )}
+    <div className="relative">
+      <UserAvatarPlaceholder
+        user={{
+          name,
+          username,
+          image: currentImage
+        }}
+        size="2xl"
+        shape="square"
+        className="border-4 border-white shadow-lg rounded-xl"
+        priority
+        alt={name || username || "Пользователь (без имени)"}
+      />
       
       {isCurrentUser && (
         <EditImageDialog
@@ -53,4 +50,4 @@ export function UserImageSection({
       )}
     </div>
   )
-} 
+}

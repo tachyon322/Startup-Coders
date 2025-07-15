@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { X, UserMinus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SquareArrowOutUpRight } from 'lucide-react';
+import { UserAvatarPlaceholder } from "../ui/ImagePlaceholder";
 
 interface Participant {
   id: string;
@@ -84,22 +84,11 @@ export default function StartupParticipantsDialog({
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center space-x-3">
-                    {participant.image ? (
-                      <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                        <Image
-                          src={participant.image}
-                          alt={participant.name || "User"}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <span className="text-indigo-600 font-medium">
-                          {(participant.name || participant.username || "U")[0].toUpperCase()}
-                        </span>
-                      </div>
-                    )}
+                    <UserAvatarPlaceholder
+                      user={participant}
+                      size="md"
+                      alt={participant.name || participant.username || "Participant"}
+                    />
 
                     <div>
                       <p className="font-medium text-gray-900">

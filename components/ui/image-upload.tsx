@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { useUploadThing } from "@/utils/uploadthing";
+import { compressImages } from "@/utils/image-compression";
 import { Button } from "./button";
 
 interface ImageUploadProps {
@@ -44,7 +45,7 @@ export function ImageUpload({ onChange, value, disabled }: ImageUploadProps) {
       }
 
       // Only allow images
-      const imageFiles = acceptedFiles.filter((file) => 
+      const imageFiles = acceptedFiles.filter((file) =>
         file.type.startsWith("image/")
       );
       
@@ -54,7 +55,20 @@ export function ImageUpload({ onChange, value, disabled }: ImageUploadProps) {
         return;
       }
 
-      await startUpload(imageFiles);
+      try {
+        // Compress images before uploading
+        const compressedImages = await compressImages(imageFiles, {
+          maxWidth: 1200,
+          maxHeight: 900,
+          quality: 0.75,
+          maxSizeKB: 800, // Target 800KB to ensure we stay under 1MB
+        });
+
+        await startUpload(compressedImages);
+      } catch (compressionError) {
+        setError("Ошибка при сжатии изображений");
+        setIsUploading(false);
+      }
     },
     [startUpload, onChange, value]
   );
@@ -106,7 +120,7 @@ export function ImageUpload({ onChange, value, disabled }: ImageUploadProps) {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              <p className="text-sm text-gray-500">Загрузка...</p>
+              <p className="text-sm text-gray-500">Сжатие и загрузка...</p>
             </div>
           ) : (
             <>
@@ -119,7 +133,7 @@ export function ImageUpload({ onChange, value, disabled }: ImageUploadProps) {
                 )}
               </div>
               <p className="text-xs text-gray-500">
-                Загрузите до 5 изображений (PNG, JPG, WEBP, до 4MB каждое)
+                Загрузите до 5 изображений (PNG, JPG, WEBP) - изображения будут автоматически сжаты
               </p>
             </>
           )}

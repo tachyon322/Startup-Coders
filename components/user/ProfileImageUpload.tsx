@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { X, User } from "lucide-react";
 import { useUploadThing } from "@/utils/uploadthing";
+import { compressImages } from "@/utils/image-compression";
 import { Button } from "../ui/button";
 
 interface ProfileImageUploadProps {
@@ -46,7 +47,7 @@ export function ProfileImageUpload({ onChange, value, disabled }: ProfileImageUp
       }
 
       // Only allow images
-      const imageFiles = acceptedFiles.filter((file) => 
+      const imageFiles = acceptedFiles.filter((file) =>
         file.type.startsWith("image/")
       );
       
@@ -56,8 +57,20 @@ export function ProfileImageUpload({ onChange, value, disabled }: ProfileImageUp
         return;
       }
 
-      // Only use the first image
-      await startUpload([imageFiles[0]]);
+      try {
+        // Compress the first image before uploading (profile images should be smaller)
+        const compressedImages = await compressImages([imageFiles[0]], {
+          maxWidth: 800,
+          maxHeight: 800,
+          quality: 0.8,
+          maxSizeKB: 500, // Profile images can be smaller - 500KB max
+        });
+
+        await startUpload(compressedImages);
+      } catch (compressionError) {
+        setError("Ошибка при сжатии изображения");
+        setIsUploading(false);
+      }
     },
     [startUpload]
   );
@@ -144,7 +157,7 @@ export function ProfileImageUpload({ onChange, value, disabled }: ProfileImageUp
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <p className="text-sm text-gray-500">Загрузка...</p>
+                <p className="text-sm text-gray-500">Сжатие и загрузка...</p>
               </div>
             ) : (
               <>
@@ -157,7 +170,7 @@ export function ProfileImageUpload({ onChange, value, disabled }: ProfileImageUp
                   )}
                 </div>
                 <p className="text-xs text-gray-500">
-                  Загрузите изображение (PNG, JPG, WEBP, до 4MB)
+                  Загрузите изображение (PNG, JPG, WEBP) - будет автоматически сжато
                 </p>
               </>
             )}

@@ -20,7 +20,7 @@ export const ourFileRouter = {
     }),
     
   // Profile image upload route - only one image allowed
-  profileImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+  profileImage: f({ image: { maxFileSize: "1MB", maxFileCount: 1 } })
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
       return { userId: "userId" }; // Add user ID from the session in a real app

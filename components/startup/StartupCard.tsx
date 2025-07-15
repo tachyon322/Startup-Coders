@@ -6,6 +6,7 @@ import { Users } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { ru } from "date-fns/locale"
 import { useMemo, memo } from "react"
+import { UserAvatarPlaceholder } from "../ui/ImagePlaceholder"
 
 interface StartupCardProps {
   startup: {
@@ -138,21 +139,11 @@ function StartupCard({ startup }: StartupCardProps) {
           
           <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-full bg-indigo-100 overflow-hidden">
-                {startup.creatorId.image ? (
-                  <Image 
-                    src={startup.creatorId.image} 
-                    alt={startup.creatorId.name || 'Creator'} 
-                    width={24} 
-                    height={24} 
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full text-indigo-500 text-xs font-bold">
-                    {startup.creatorId.name ? startup.creatorId.name.charAt(0).toUpperCase() : 'U'}
-                  </div>
-                )}
-              </div>
+              <UserAvatarPlaceholder
+                user={startup.creatorId}
+                size="xs"
+                alt={startup.creatorId.name || startup.creatorId.username || 'Creator'}
+              />
               <div className="text-sm">
                 <span className="text-gray-500">от</span>{" "}
                 <span className="font-medium text-indigo-600">
