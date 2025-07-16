@@ -16,9 +16,70 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StartupCoders.ru | Найдите идеального партнера для стартапа",
-  description: "Найдите идеального партнера для стартапа. StartupCoders.ru соединяет разработчиков, которые хотят построить что то новое вместе.",
-  keywords: ["startup", "developers", "coders", "найти партнера", "тех стартап", "программирование", "партнер по стартапу", "команда стартапа"],
+  title: {
+    default: "StartupCoders.ru - Найдите идеального партнера для стартапа",
+    template: "%s | StartupCoders.ru"
+  },
+  description: "Найдите идеального партнера для стартапа. StartupCoders.ru соединяет разработчиков, дизайнеров и предпринимателей, которые хотят построить что-то новое вместе. Создайте команду мечты для вашего проекта.",
+  keywords: [
+    "startup", "стартап", "developers", "разработчики", "coders", "программисты",
+    "найти партнера", "тех стартап", "программирование", "партнер по стартапу", 
+    "команда стартапа", "соучредитель", "IT партнер", "техническое партнерство",
+    "стартап команда", "поиск разработчика", "найти программиста"
+  ],
+  authors: [{ name: "StartupCoders.ru" }],
+  creator: "StartupCoders.ru",
+  publisher: "StartupCoders.ru",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://startupcoders.ru'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'ru-RU': '/',
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: 'https://startupcoders.ru',
+    title: 'StartupCoders.ru - Найдите идеального партнера для стартапа',
+    description: 'Найдите идеального партнера для стартапа. StartupCoders.ru соединяет разработчиков, дизайнеров и предпринимателей, которые хотят построить что-то новое вместе.',
+    siteName: 'StartupCoders.ru',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'StartupCoders.ru - Платформа для поиска партнеров по стартапу',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'StartupCoders.ru - Найдите идеального партнера для стартапа',
+    description: 'Найдите идеального партнера для стартапа. Соединяем разработчиков, дизайнеров и предпринимателей.',
+    images: ['/og-image.jpg'],
+    creator: '@startupcoders_ru',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -46,12 +107,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://startupcoders.ru" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         {children}
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "StartupCoders.ru",
+              "url": "https://startupcoders.ru",
+              "description": "Платформа для поиска партнеров по стартапу",
+              "inLanguage": "ru-RU",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://startupcoders.ru/find?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
       </body>
     </html>
   );

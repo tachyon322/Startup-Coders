@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Important pages
+Allow: /find
+Allow: /about
+Allow: /create
+
+# Block admin and API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /userserver/
+Disallow: /verify/
+
+# Block user-specific pages from indexing
+Disallow: /user/*/
+Disallow: /requests/
+
+# Sitemap location
+Sitemap: https://startupcoders.ru/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
